@@ -33,7 +33,7 @@
 			@include('crud.blocks.bottom')			
 			
 		</div>		 
-		
+
 		<script src="https://kit.fontawesome.com/83f2bdf771.js" crossorigin="anonymous"></script>
 
 		<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
