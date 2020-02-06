@@ -1,0 +1,31 @@
+
+	body {
+				
+		font-family: 'Source Sans Pro', sans-serif;
+		
+		/*font-size: 15px;*/
+   		
+	}
+	
+	.cursor-pointer {
+		
+		cursor: pointer;
+		
+	}
+
+	A {
+		
+		color: #3298C7;
+		
+	}
+	
+	/* --- --- --- Pagination  --- --- --- */
+
+	.page-item.active .page-link {
+	
+		background-color: #3298C7;
+		
+		border-color: #3298C7;
+		
+	}
+	
