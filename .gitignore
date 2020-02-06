@@ -1,4 +1,9 @@
 /node_modules
 /vendor
-/.idea
+
+.idea/modules.xml
+.idea/misc.xml
+.idea/workspace.xml
+.idea/dbgui.iml
+
 .env
