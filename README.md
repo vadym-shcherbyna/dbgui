@@ -1,6 +1,6 @@
 # DBGUI
-    GUI for database (Laravel 6.x)
-# Files to be overwritten after Laravel installation
+   GUI for database (Laravel 6.x)
+# Install
 
-1) app\Http\Kernel.php (add middleware route)
-2) routes\web.php
+Update app/Http/Kernel.php: add an element  'crud' => \App\Http\Middleware\CheckAdmin::class to $routeMiddleware array. 
+

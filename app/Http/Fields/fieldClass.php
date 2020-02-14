@@ -1,6 +1,6 @@
 <?php
 
-	namespace App\Http\Controllers\crud;
+	namespace App\Http\Fields;
 
 	use Illuminate\Http\Request;
 	

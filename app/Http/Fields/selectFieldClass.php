@@ -1,8 +1,8 @@
 <?php
 
-	namespace App\Http\Controllers\crud\fields;
+	namespace App\Http\Fields;
 
-	use App\Http\Controllers\crud\fieldClass;		
+	use App\Http\Fields\fieldClass;	
 	
 	use App\Table;
 	

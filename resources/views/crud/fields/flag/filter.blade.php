@@ -11,9 +11,9 @@
 			
 			<option value="clear"></option>	
 			
-			<option value="1" @if($field->value == '1') selected @endif>On</option>										
+			<option value="1" @if($field->value == '1') selected @endif>Yes</option>
 			
-			<option value="0" @if($field->value == '0') selected @endif>Off</option>										
+			<option value="0" @if($field->value == '0') selected @endif>No</option>
 									
 		</select>		
 		

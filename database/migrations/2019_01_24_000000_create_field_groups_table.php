@@ -30,7 +30,7 @@
 			
 			DB::table('field_groups')->insert(['id' => 4, 'name' => 'Text', 'code' => 'text']);	
 			
-			DB::table('field_groups')->insert(['id' => 5, 'name' => 'Timestamp', 'code' => 'timestamp', 'flag_sorted' => 1]);	
+			DB::table('field_groups')->insert(['id' => 5, 'name' => 'Datetime', 'code' => 'datetime', 'flag_sorted' => 1]);
 			
 			DB::table('field_groups')->insert(['id' => 6, 'name' => 'Select', 'code' => 'select', 'flag_sorted' => 0]);	
 			
