@@ -1,17 +1,17 @@
 <?php
 
-	namespace App\Http\Controllers;
+namespace App\Http\Controllers;
 
-	use App\Http\Controllers\Controller;	
-	
-	use App\TableGroup;
-	use App\FieldGroup;
+use App\Http\Controllers\Controller;
+use App\TableGroup;
+use App\FieldGroup;
 
-	class pageController extends Controller {
+class pageController extends Controller
+{
 		
-		public $Data = [];
+	public $Data = [];
 		
-		public function __construct() {
+	public function __construct() {
 			
 			//
 			$this->Data ['table_groups'] = TableGroup::with('tables')->orderBy('weight', 'DESC')->get();

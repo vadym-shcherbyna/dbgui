@@ -1,20 +1,19 @@
 <?php
 
-	namespace App\Http\Fields;
+namespace App\Http\Fields;
 
-	use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 	
-	class fieldClass  {
-		
-		public $isSorted = true;
+class fieldClass
+{
 
-		public function mutateAddGet ($field) {
-			return $field;
-		}		
+	public function mutateAddGet ($field) {
+		return $field;
+	}
 		
-		public function mutateList ($value, $field) {
-			return $value;
-		}					
+	public function mutateList ($value, $field) {
+		return $value;
+	}
 		
 		public function mutateAddPost (Request $request, $field) {
 			return $request->input($field->code);
@@ -56,4 +55,4 @@
 		
 		}			
 		
-	}
+}

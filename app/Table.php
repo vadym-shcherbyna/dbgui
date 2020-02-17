@@ -1,14 +1,24 @@
 <?php
 
-	namespace App;
+namespace App;
 
-	use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 	
-	class Table extends Model {
-		
-		protected $table = 'tables';
-		
-		public $timestamps = false;
+class Table extends Model
+{
+    /**
+     * Set  name  of  fields  table.
+     *
+     * @var string
+     */
+    protected $table = 'tables';
+
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
 		
 		// Relationships
 		
