@@ -360,32 +360,38 @@ class CRUDController extends pageController
             }
         }
     }
-		
-		// crud/{table}/delete/{id} GET
-		
-		public function itemDelete ($tableCode, $id) {
-			
-			// Check table and row
-			
-			if ($this->checkTableAndRow($tableCode, $id)) {
-				
+
+    /**
+     * Controller for crud/{table}/delete/{id} GET: delete row
+     *
+     * @param string  $tableCode table code
+     * @param integer  $id row ID
+     * @return CRUDController
+     */
+	public function itemDelete ($tableCode, $id)
+    {
+        // Check table  by  code
+        if ($this->checkTable($tableCode)) {
+            // Check row  by  ID
+            if ($this->checkRow($id)) {
+                // Mutate row
 				foreach ($this->Data['table']->fields as $key => $field) {
-					
 					$this->{$this->fieldClass($field)}->mutateDelete($this->Data['row'], $field);
-					
 				}
-				
+
+				// Get row
 				$row = DB::table($this->Data['table']->code)->where('id', $id)->first();
-				
+
+				// Delete row
 				DB::table($this->Data['table']->code)->where('id', $id)->delete();
-				
-				$this->itemDeleteMutate($row->code);
-					
+
+				// Extra func after delete row
+				$this->itemDeleteMutate($row);
 			}		
 			
 			return $this->redirectToList();
-			
-		}
+        }
+    }
 
     /**
      * Return  table field  by  ID
@@ -435,89 +441,96 @@ class CRUDController extends pageController
     {
     	// Check row
         $row = DB::table($this->Data['table']->code)->where('id', $id)->first();
+
         if ($row) {
             $this->Data['row'] = $row;
-					
             return true;
         }
 
 		return false;
     }
-		
-		// Create validate array
-		
-		protected function validateArray ($fields) {
-			
-			$validateArray = [];
-			
-			foreach ($fields as $key => $value) {
-					
-				// implement require flag
-					
-				if ($value->flag_required) {
-					
-					$validateArray [$value->code] = 'required'; 
-						
-				}				
-				
-				// implement unique flag
-				
-				/*
-				
-				if ($value->flag_unique) {
-					
-					$validateArray [$value->code] .= '|unique:'.$this->DATA ['CurrentTable']->code.','.$value->code; 
-					
-					if ($id) {
-						
-						$validateArray [$value->code] .= ','.$id;
-						
-					}
-						
-				}	
-				
-				*/				
-					
-			}			
-			
-			return $validateArray;
-			
-		}			
-		
-		// Redirect to List of  items
-		
-		protected function redirectToList () {
-				
-			return redirect('crud/'.$this->Data['table']->url);			
-				
-		}		
-		
-		// Forget pagination
-		
-		protected function forgetPagination () {
-			
-			request()->session()->forget('page.'.$this->Data['table']->code);
-			
-		}
-		
-		//  Function for tables and fields
-		
-		protected function itemAddPostMutate ($insertArray) {
-		
-			return true;
-		
-		}		
-		
-		protected function itemEditPostMutate ($from,$to) {
-		
-			return true;
-		
-		}					
 
-		protected function itemDeleteMutate ($row) {
-		
-			return true;
-		
-		}							
-		
-	}
+    /**
+     * Create array with validate rules
+     *
+     * @param array  $fields table  fields  array
+     * @return array
+     */
+	protected function validateArray ($fields)
+    {
+        $validateArray = [];
+
+		foreach ($fields as $key => $value) {
+					
+		    // implement require fla
+			if ($value->flag_required) {
+			    $validateArray [$value->code] = 'required';
+			}
+				
+			// implement unique flag
+            /*
+			if ($value->flag_unique) {
+				$validateArray [$value->code] .= '|unique:'.$this->DATA ['CurrentTable']->code.','.$value->code;
+				if ($id) $validateArray [$value->code] .= ','.$id;
+			}
+			*/
+					
+		}
+			
+		return $validateArray;
+    }
+
+    /**
+     * Redirect to List of  items
+     *
+     * @return Illuminate\Support\Facades\Redirect
+     */
+	protected function redirectToList ()
+    {
+        return redirect('crud/'.$this->Data['table']->url);
+    }
+
+    /**
+     * Forget pagination
+     *
+     * @return void
+     */
+	protected function forgetPagination ()
+    {
+        request()->session()->forget('page.'.$this->Data['table']->code);
+    }
+
+    /**
+     * Action after insert row data
+     *
+     * @param array  $insertData row data after insert
+     * @return boolean
+     */
+    protected function itemAddPostMutate ($insertData)
+    {
+		return true;
+    }
+
+    /**
+     * Action after update row data
+     *
+     * @param array  $oldData row data before update
+     * @param array  $updatedData row data after update
+     * @return boolean
+     */
+    protected function itemEditPostMutate ($oldData, $updatedData)
+    {
+        return true;
+    }
+
+    /**
+     * Action after delete row data
+     *
+     * @param array  $rowData deleting row data
+     * @return boolean
+     */
+    protected function itemDeleteMutate ($rowData)
+    {
+		return true;
+    }
+}

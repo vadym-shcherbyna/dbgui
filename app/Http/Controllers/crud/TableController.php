@@ -10,50 +10,75 @@ use Illuminate\Http\Request;
 
 class TableController extends CRUDController
 {
-		// ADD
-		
-		public function itemAddPost (Request $request,  $tableCode = 'tables') {	
-		
-			return parent::itemAddPost ($request, 'tables');
-		
-		}
-			
-		protected function itemAddPostMutate ($code) {
-		
-			Schema::create($code, function (Blueprint $table) {
-				
-				$table->increments('id');
-				
-			});
-		
-		}		
-		
-		//  EDIT
-		
-		public function itemEditPost (Request $request, $id, $tableCode = 'tables') {
-			
-			return parent::itemAddPost ($request, 'tables', $id);
-		
-		}	
-		
-		protected function itemEditPostMutate ($rowModel, $updateArray) {
-		
-			Schema::rename($rowModel->code, $updateArray->code);
-		
-		}					
-		
-		// DELETE
-		
-		public function itemDelete ($id, $tableCode = 'tables') {	
-		
-			return parent::itemDelete ('tables',  $id);
-		
-		}				
+    /**
+     * Call itemAddPost with code 'tables'
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return CRUDController
+     */
+    public function tableAddPost (Request $request)
+    {
+	    return parent::itemAddPost ($request, 'tables');
+    }
 
-		protected function itemDeleteMutate ($code) {
-			
-			Schema::dropIfExists($code);			
-		
-		}		
-		
-	}
+    /**
+     * Action after insert row data
+     *
+     * @param array  $insertData row data after insert
+     * @return boolean
+     */
+    protected function itemAddPostMutate ($insertData)
+    {
+        //  Create table with one  row
+        Schema::create($insertData->code, function (Blueprint $table) {
+            $table->increments('id');
+        });
+    }
+
+    /**
+     * Call itemEditPost with code 'tables'
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param integer  $id row ID
+     * @return CRUDController
+     */
+    public function tableEditPost (Request $request, $id)
+    {
+        return parent::itemEditPost ($request, 'tables', $id);
+    }
+
+    /**
+     * Action after update row data
+     *
+     * @param array  $oldData row data before update
+     * @param array  $updatedData row data after update
+     * @return boolean
+     */
+    protected function itemEditPostMutate ($oldData, $updatedData)
+    {
+        if ($oldData->code != $updatedData->code)
+            Schema::rename($oldData->code, $updatedData->code);
+    }
+
+    /**
+     * Call itemDelete with code 'tables'
+     *
+     * @param integer  $id row ID
+     * @return CRUDController
+     */
+    public function tableDelete ($tableCode, $id)
+    {
+        return parent::itemDelete ('tables',  $id);
+    }
+
+    /**
+     * Action after delete row data
+     *
+     * @param array  $rowData deleting row data
+     * @return boolean
+     */
+    protected function itemDeleteMutate ($rowData)
+    {
+        Schema::dropIfExists($rowData->code);
+    }
+}

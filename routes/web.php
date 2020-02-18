@@ -11,9 +11,9 @@
 	Route::get('auth/logout', 'auth\AuthController@logout')->name('logout');
 	
 	// Redefinition controllers for  tables' section
-	Route::post('crud/tables/add', 'crud\TableController@itemAddPost')->middleware('crud');
-	Route::post('crud/tables/edit/{id}', 'crud\TableController@itemEditPost')->middleware('crud');
-	Route::get('crud/tables/delete/{id}', 'crud\TableController@itemDelete')->middleware('crud');
+	Route::post('crud/tables/add', 'crud\TableController@tableAddPost')->middleware('crud');
+	Route::post('crud/tables/edit/{id}', 'crud\TableController@tableEditPost')->middleware('crud');
+	Route::get('crud/tables/delete/{id}', 'crud\TableController@tableDelete')->middleware('crud');
 
     // Redefinition controllers for  fields' section
 	Route::post('crud/fields/add', 'crud\FieldController@itemAddPost')->middleware('crud');
