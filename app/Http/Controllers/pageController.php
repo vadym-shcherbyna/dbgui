@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\TableGroup;
-use App\FieldGroup;
+use App\FieldType;
 
 class pageController extends Controller
 {
@@ -17,7 +17,7 @@ class pageController extends Controller
 			$this->Data ['table_groups'] = TableGroup::with('tables')->orderBy('weight', 'DESC')->get();
 			
 			//
-			$fieldGroups = FieldGroup::orderBy('name', 'ASC')->get();
+			$fieldGroups = FieldType::orderBy('name', 'ASC')->get();
 			
 			// Init all field's classes (types)
 			foreach ($fieldGroups as $field) {

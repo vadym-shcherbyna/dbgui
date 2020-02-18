@@ -1,17 +1,15 @@
 <?php
 
-	namespace App\Http\Controllers\crud;
+namespace App\Http\Controllers\crud;
 
-	use App\Http\Controllers\crud\CRUDController;	
-	
-	use Illuminate\Support\Facades\Schema;
-	use Illuminate\Database\Schema\Blueprint;
-	use Illuminate\Database\Migrations\Migration;
-	
-	use Illuminate\Http\Request;
+use App\Http\Controllers\crud\CRUDController;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Http\Request;
 
-	class TableController extends CRUDController {
-		
+class TableController extends CRUDController
+{
 		// ADD
 		
 		public function itemAddPost (Request $request,  $tableCode = 'tables') {	
@@ -38,9 +36,9 @@
 		
 		}	
 		
-		protected function itemEditPostMutate ($from, $to) {
+		protected function itemEditPostMutate ($rowModel, $updateArray) {
 		
-			Schema::rename($from, $to);
+			Schema::rename($rowModel->code, $updateArray->code);
 		
 		}					
 		

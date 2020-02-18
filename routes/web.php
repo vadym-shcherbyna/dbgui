@@ -35,10 +35,7 @@
 		
 	// Flag
 	Route::get('crud/{table}/flag/{field}/id/{id}', 'crud\CRUDController@itemsListFlag')->middleware('crud');	
-	
-	// Pagination
-	Route::get('crud/{table}/pagination/{value}', 'crud\CRUDController@itemsListPagination')->middleware('crud');
-	
+
 	// Add
 	Route::get('crud/{table}/add', 'crud\CRUDController@itemAddGet')->middleware('crud');
 	Route::post('crud/{table}/add', 'crud\CRUDController@itemAddPost')->middleware('crud');
