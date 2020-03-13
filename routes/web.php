@@ -33,16 +33,16 @@
 	// Sorting
 	Route::get('crud/{table}/sort/{field}/direction/{value}', 'crud\CRUDController@itemsListSorting')->middleware('crud');
 		
-	// Flag
+	// Flags
 	Route::get('crud/{table}/flag/{field}/id/{id}', 'crud\CRUDController@itemsListFlag')->middleware('crud');	
 
-	// Add
+	// Add item
 	Route::get('crud/{table}/add', 'crud\CRUDController@itemAddGet')->middleware('crud');
 	Route::post('crud/{table}/add', 'crud\CRUDController@itemAddPost')->middleware('crud');
 	
-	// Edit
+	// Edit item
 	Route::get('crud/{table}/edit/{id}', 'crud\CRUDController@itemEditGet')->middleware('crud');
 	Route::post('crud/{table}/edit/{id}', 'crud\CRUDController@itemEditPost')->middleware('crud');
 	
-	// Delete
+	// Delete item
 	Route::get('crud/{table}/delete/{id}', 'crud\CRUDController@itemDelete')->middleware('crud');

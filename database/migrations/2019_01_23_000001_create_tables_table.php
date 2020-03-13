@@ -38,7 +38,7 @@
 			
 			DB::table('tables')->insert(['id' => 2, 'table_group_id' => 1, 'name' => 'Fields',  'code' => 'fields', 'url' => 'fields', 'weight' => 90, 'fa' => 'edit', 'item_name' => 'field']);			
 			
-			DB::table('tables')->insert(['id' => 3, 'table_group_id' => 1, 'name' => 'Field groups',  'code' => 'field_groups', 'url' => 'field-groups', 'weight' => 80, 'fa' => 'table', 'item_name' => 'group']);
+			DB::table('tables')->insert(['id' => 3, 'table_group_id' => 1, 'name' => 'Field types',  'code' => 'field_types', 'url' => 'field-types', 'weight' => 80, 'fa' => 'table', 'item_name' => 'type']);
 			
 			DB::table('tables')->insert(['id' => 4, 'table_group_id' => 1, 'name' => 'Table groups',  'code' => 'table_groups', 'url' => 'table-groups', 'weight' => 70, 'fa' => 'list-ul', 'item_name' => 'group']);
 						

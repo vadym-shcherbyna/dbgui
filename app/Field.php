@@ -25,7 +25,8 @@ class Field extends Model
      *
      * @return  object
      */
-    public function type () {
+    public function type ()
+    {
         return $this->belongsTo('App\FieldType', 'field_type_id');
     }
 }

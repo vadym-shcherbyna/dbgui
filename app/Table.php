@@ -20,9 +20,8 @@ class Table extends Model
      */
     public $timestamps = false;
 		
-		// Relationships
-		
-		public function fieldsView() {
+    // Relationships
+	public function fieldsView() {
 			
 			return $this->hasMany('App\Field', 'table_id')->where('flag_view', 1)->orderBy('weight', 'DESC');
 		
