@@ -1,9 +1,10 @@
 <?php
 
-	namespace App\Http\Fields;
+namespace App\Http\Fields;
 
-	use App\Http\Fields\fieldClass;	
-	
-	class textFieldClass  extends fieldClass {
-		
-	}
+use App\Http\Fields\fieldClass;
+
+class textFieldClass  extends fieldClass
+{
+
+}

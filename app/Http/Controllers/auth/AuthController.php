@@ -13,7 +13,7 @@ class AuthController extends Controller
     /**
      * Controller for login page
      *
-     * @return Illuminate\View\View|Illuminate\Support\Facades\Redirect
+     * @return Response
      */
     public function loginForm()
     {
@@ -28,8 +28,8 @@ class AuthController extends Controller
      * Controller  for  submiting login form
      * Create new user account | Create  new admin  account  | Auth
      *
-     * @param  \Illuminate\Http\Request $request
-     * @return Illuminate\View\View
+     * @param \Illuminate\Http\Request $request
+     * @return Response
      */
     public function loginPost(Request $request)
     {
@@ -50,7 +50,7 @@ class AuthController extends Controller
         if ($request->input('remember')) {
             $remember = true;
         }
-            
+
         // Auth user  or create  new  user
         $users = User::where('user_group_id', 1)->get();
 

@@ -3,56 +3,115 @@
 namespace App\Http\Fields;
 
 use Illuminate\Http\Request;
-	
+
 class fieldClass
 {
+    /**
+     * Mutate field for adding  form
+     *
+     * @param  array $field
+     * @return array
+     */
+    public function mutateAddGet ($field)
+    {
+        return $field;
+    }
 
-	public function mutateAddGet ($field) {
-		return $field;
-	}
-		
-	public function mutateList ($value, $field) {
-		return $value;
-	}
-		
-		public function mutateAddPost (Request $request, $field) {
-			return $request->input($field->code);
-		}			
-		
-		public function mutateEditGet ($field) {
-			return $field;
-		}		
-		
-		public function mutateEditPost (Request $request, $field) {
-			return $request->input($field->code);
-		}				
-		
-		public function mutateDelete ($row, $field) {
-			return $row->{$field->code};
-		}		
+    /**
+     * Mutate field for list of items
+     *
+     * @param  string $value
+     * @param  array $field
+     * @return array
+     */
+    public function mutateList ($value, $field = null)
+    {
+        return $value;
+    }
 
-		public function setFilterWhere ($model, $field,  $value) {
-			$model  = $model->where($field->code, $value);
+    /**
+     * Mutate field before  adding in database
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  array $field
+     * @return string
+     */
+    public function mutateAddPost (Request $request, $field)
+    {
+        return $request->input($field->code);
+    }
 
-			return $model;
-		}	
+    /**
+     * Mutate field for editing  form
+     *
+     * @param  array $field
+     * @return array
+     */
+    public function mutateEditGet ($field)
+    {
+        return $field;
+    }
 
-		public function setFilterOptions ($field, $table) {
-			
-			$field->options  = [];
-			
-			if (request()->session()->has('filters.'.$table->code)) {
+    /**
+     * Mutate field before adding in database after  editing
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  array $field
+     * @return string
+     */
+    public function mutateEditPost (Request $request, $field)
+    {
+        return $request->input($field->code);
+    }
 
-				$filters = request()->session()->get('filters.'.$table->code);
+    /**
+     * Mutate field before delete item
+     *
+     * @param  array $row field settings
+     * @param  array $field field data
+     * @return string
+     */
+    public function mutateDelete ($row, $field)
+    {
+        return $row->{$field->code};
+    }
 
-				if  (isset($filters[$field->id])) {
-					$field->value = $filters [$field->id] ['value'];
-				}
-				
-			}
-			
-			return $field;
-		
-		}			
-		
+    /**
+     * Update DB object, add  where clause
+     *
+     * @param  DB $model query builder
+     * @param  array $field field data
+     * @param  string $value value
+     * @return DB
+     */
+    public function setFilterWhere ($model, $field,  $value)
+    {
+        $model  = $model->where($field->code, $value);
+
+        return $model;
+    }
+
+    /**
+     * Update  field data: set value
+     *
+     * @param  array $field field data
+     * @param  array $table table data
+     * @return DB
+     */
+    public function setFilterOptions ($field, $table)
+    {
+        // oprions array for select
+        $field->options  = [];
+
+        // set filter value in session
+        if (request()->session()->has('filters.'.$table->code)) {
+            $filters = request()->session()->get('filters.'.$table->code);
+
+            if  (isset($filters[$field->id])) {
+                $field->value = $filters [$field->id] ['value'];
+            }
+        }
+
+        return $field;
+    }
 }

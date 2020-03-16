@@ -3,7 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-	
+
 class Table extends Model
 {
     /**
@@ -19,24 +19,31 @@ class Table extends Model
      * @var bool
      */
     public $timestamps = false;
-		
-    // Relationships
-	public function fieldsView() {
-			
-			return $this->hasMany('App\Field', 'table_id')->where('flag_view', 1)->orderBy('weight', 'DESC');
-		
-		}		
 
-		public function filters() {
-			
-			return $this->hasMany('App\Field', 'table_id')->where('flag_filter', 1)->orderBy('weight', 'DESC');
-		
-		}						
-		
-		public function fields() {
-			
-			return $this->hasMany('App\Field', 'table_id')->orderBy('weight', 'DESC');
-		
-		}				
-			
-	}
+    /**
+     * Ralationships: "view" fields to  table
+     *
+     */
+    public function fieldsView()
+    {
+        return $this->hasMany('App\Field', 'table_id')->where('flag_view', 1)->orderBy('weight', 'DESC');
+    }
+
+    /**
+     * Ralationships: "filter" fields to  table
+     *
+     */
+    public function filters()
+    {
+        return $this->hasMany('App\Field', 'table_id')->where('flag_filter', 1)->orderBy('weight', 'DESC');
+    }
+
+    /**
+     * Ralationships: all fields to  table
+     *
+     */
+    public function fields()
+    {
+        return $this->hasMany('App\Field', 'table_id')->orderBy('weight', 'DESC');
+    }
+}

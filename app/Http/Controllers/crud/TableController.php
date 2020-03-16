@@ -18,7 +18,7 @@ class TableController extends CRUDController
      */
     public function tableAddPost (Request $request)
     {
-	    return parent::itemAddPost ($request, 'tables');
+        return parent::itemAddPost ($request, 'tables');
     }
 
     /**
