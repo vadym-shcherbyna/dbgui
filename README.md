@@ -1,5 +1,5 @@
 # DBGUI
-   GUI for database (Laravel 7.1.1)
+   GUI for database (Laravel 7.x)
 # Install
  - Install  Laravel 7.*
  - Copy  repository
