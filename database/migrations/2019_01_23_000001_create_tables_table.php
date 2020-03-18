@@ -13,7 +13,7 @@ class CreateTablesTable extends Migration
      */
     public function up() {
         Schema::create('tables', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->unsignedInteger('table_group_id');
             $table->foreign('table_group_id')
                 ->references('id')->on('table_groups')

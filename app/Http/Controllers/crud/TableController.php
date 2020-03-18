@@ -5,7 +5,6 @@ namespace App\Http\Controllers\crud;
 use App\Http\Controllers\crud\CRUDController;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Http\Request;
 
 class TableController extends CRUDController
@@ -25,12 +24,12 @@ class TableController extends CRUDController
      * Action after insert row data
      *
      * @param array  $insertData row data after insert
-     * @return boolean
+     * @return void
      */
     protected function itemAddPostMutate ($insertData)
     {
         //  Create table with one  row
-        Schema::create($insertData->code, function (Blueprint $table) {
+        Schema::create($insertData ['code'], function (Blueprint $table) {
             $table->increments('id');
         });
     }
@@ -50,14 +49,15 @@ class TableController extends CRUDController
     /**
      * Action after update row data
      *
-     * @param array  $oldData row data before update
-     * @param array  $updatedData row data after update
-     * @return boolean
+     * @param array  $updateData post data  for updating
+     * @param array  $dbData row data from database
+     * @return void
      */
-    protected function itemEditPostMutate ($oldData, $updatedData)
+    protected function itemEditPostMutate ($updateData, $dbData)
     {
-        if ($oldData->code != $updatedData->code)
-            Schema::rename($oldData->code, $updatedData->code);
+        if ($updateData ['code'] != $dbData->code) {
+            Schema::rename($dbData->code, $updateData ['code']);
+        }
     }
 
     /**
@@ -66,7 +66,7 @@ class TableController extends CRUDController
      * @param integer  $id row ID
      * @return CRUDController
      */
-    public function tableDelete ($tableCode, $id)
+    public function tableDelete ($id)
     {
         return parent::itemDelete ('tables',  $id);
     }
@@ -75,7 +75,7 @@ class TableController extends CRUDController
      * Action after delete row data
      *
      * @param array  $rowData deleting row data
-     * @return boolean
+     * @return void
      */
     protected function itemDeleteMutate ($rowData)
     {

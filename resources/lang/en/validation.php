@@ -133,6 +133,8 @@ return [
         ],
     ],
 
+    'unique_by_table' => 'The :attribute has already been taken.',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes

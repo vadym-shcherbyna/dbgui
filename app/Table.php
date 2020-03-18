@@ -30,12 +30,12 @@ class Table extends Model
     }
 
     /**
-     * Ralationships: "filter" fields to  table
+     * Ralationships: edit fields to  table
      *
      */
-    public function filters()
+    public function fieldsEdit()
     {
-        return $this->hasMany('App\Field', 'table_id')->where('flag_filter', 1)->orderBy('weight', 'DESC');
+        return $this->hasMany('App\Field', 'table_id')->where('flag_edit', 1)->orderBy('weight', 'DESC');
     }
 
     /**
@@ -45,5 +45,14 @@ class Table extends Model
     public function fields()
     {
         return $this->hasMany('App\Field', 'table_id')->orderBy('weight', 'DESC');
+    }
+
+    /**
+     * Ralationships: "filter" fields to  table
+     *
+     */
+    public function filters()
+    {
+        return $this->hasMany('App\Field', 'table_id')->where('flag_filter', 1)->orderBy('weight', 'DESC');
     }
 }

@@ -62,13 +62,13 @@
 										
 								</div>
 									
-							@endif								 
+							@endif
 																				
-							@foreach ($table->fields as $field)
+							@foreach ($table->fieldsEdit as $field)
 														
 								@include('crud.fields.'.$field->type->code.'.form', ['field' => $field, 'row' => $row])
 								
-							@endforeach																	
+							@endforeach
 								
 							<div class="form-group">
 							

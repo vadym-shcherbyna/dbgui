@@ -16,9 +16,9 @@ Route::post('crud/tables/edit/{id}', 'crud\TableController@tableEditPost')->midd
 Route::get('crud/tables/delete/{id}', 'crud\TableController@tableDelete')->middleware('crud');
 
 // Redefinition controllers for  fields' section
-Route::post('crud/fields/add', 'crud\FieldController@itemAddPost')->middleware('crud');
-Route::post('crud/fields/edit/{id}', 'crud\FieldController@itemEditPost')->middleware('crud');
-Route::get('crud/fields/delete/{id}', 'crud\FieldController@itemDelete')->middleware('crud');
+Route::post('crud/fields/add', 'crud\FieldController@fieldAddPost')->middleware('crud');
+Route::post('crud/fields/edit/{id}', 'crud\FieldController@fieldEditPost')->middleware('crud');
+Route::get('crud/fields/delete/{id}', 'crud\FieldController@fieldDelete')->middleware('crud');
 
 // Crud index (list)
 Route::get('crud', 'crud\CRUDController@index')->name('crud')->middleware('crud');
@@ -29,6 +29,9 @@ Route::get('crud/{table}/list', 'crud\CRUDController@itemsList')->middleware('cr
 
 // List filter
 Route::get('crud/{table}/filter/{field}/value/{value}', 'crud\CRUDController@itemsListFilter')->middleware('crud');
+
+// Pagination
+Route::get('crud/{table}/numrows/{value}', 'crud\CRUDController@itemsListNumRows')->middleware('crud');
 
 // Sorting
 Route::get('crud/{table}/sort/{field}/direction/{value}', 'crud\CRUDController@itemsListSorting')->middleware('crud');

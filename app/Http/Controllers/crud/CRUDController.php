@@ -49,6 +49,14 @@ class CRUDController extends pageController
     private $sortingDirection = 'DESC';
 
     /**
+     * Array  with validaton rules
+     *
+     * @global protected
+     * @var array
+     */
+    protected  $validateArray =  [];
+
+    /**
      * Controller for index page
      *
      * @return Response
@@ -68,6 +76,7 @@ class CRUDController extends pageController
     {
         // Check table code
         $this->Data['table'] = Table::with('fieldsView')->with('filters')->where('url', $tableCode)->first();
+
         if ($this->Data['table']) {
             // Add page number  to  session
             if (request()->has('page')) {
@@ -77,6 +86,11 @@ class CRUDController extends pageController
             // Copy page number  from session to   \Illuminate\Http\Request
             if (request()->session()->has('page.'.$this->Data['table']->code)) {
                 request()->request->add(['page' => request()->session()->get('page.'.$this->Data['table']->code)]);
+            }
+
+            //  Set num  rows
+            if (request()->session()->has('numrows.'.$this->Data['table']->code)) {
+                $this->currentPagination =  request()->session()->get('numrows.'.$this->Data['table']->code);
             }
 
             // Set title
@@ -160,7 +174,7 @@ class CRUDController extends pageController
     public function itemsListFilter ($tableCode, $fieldID, $value)
     {
         //  Checking table
-        if ($this->checkTable($tableCode)) {
+        if ($this->setTable($tableCode)) {
             // Get  table  field by $fieldID
             if ($field = $this->getTableFieldById($fieldID)) {
                 if ($value == self::FILTER_CLEAR) {
@@ -190,7 +204,7 @@ class CRUDController extends pageController
     public function itemsListSorting  ($tableCode, $fieldID, $value)
     {
         //  Checking table
-        if ($this->checkTable($tableCode)) {
+        if ($this->setTable($tableCode)) {
             // Get  table  field by $fieldID
             if ($field = $this->getTableFieldById($fieldID)) {
                 $direction = ($value == 'desc') ? 'DESC' : 'ASC';
@@ -204,6 +218,24 @@ class CRUDController extends pageController
     }
 
     /**
+     * Controller for crud/{table}/numrows/{value}:   set num rows  on page
+     *
+     * @param string  $tableCode table code
+     * @param integer  $numRowValue num rows
+     * @return Responce
+     */
+    public function itemsListNumRows ($tableCode, $numRowValue)
+    {
+        //  Checking table
+        if ($this->setTable($tableCode)) {
+            if(in_array($numRowValue, self::PAGINATION_ARRAY)) {
+                request()->session()->put('numrows.'.$this->Data['table']->code, $numRowValue);
+            }
+        }
+        return $this->redirectToList();
+    }
+
+    /**
      * Controller for crud/{table}/flag/{field}/id/{id} - change  value of  flag
      *
      * @param string  $tableCode table code
@@ -214,7 +246,7 @@ class CRUDController extends pageController
     public function itemsListFlag ($tableCode, $fieldID, $id)
     {
         //  Checking table
-        if ($this->checkTable($tableCode)) {
+        if ($this->setTable($tableCode)) {
             // Get  table  field by $fieldID
             if ($field = $this->getTableFieldById($fieldID)) {
                 // Get row
@@ -246,7 +278,7 @@ class CRUDController extends pageController
     public function itemAddGet ($tableCode)
     {
         // Check table
-        if ($this->checkTable($tableCode)) {
+        if ($this->setTable($tableCode)) {
             // Mutate fields
             foreach ($this->Data['table']->fields as $key => $field) {
                 $this->Data['table']->fields[$key] = $this->{$this->fieldClass($field)}->mutateAddGet($field);
@@ -266,9 +298,10 @@ class CRUDController extends pageController
     public function itemAddPost (Request $request, $tableCode)
     {
         // Check table and row
-        if ($this->checkTable($tableCode)) {
+        if ($this->setTable($tableCode)) {
             // Validate
-            $validator = Validator::make($request->all(), $this->validateArray($this->Data['table']->fields));
+            $this->createValidateArray($this->Data['table']->fields);
+            $validator = Validator::make($request->all(), $this->validateArray);
 
             // return form if  error
             if ($validator->fails()) {
@@ -287,7 +320,7 @@ class CRUDController extends pageController
             DB::table($this->Data['table']->code)->insert($insertArray);
 
             // Call extra func.
-            $this->itemAddPostMutate($insertArray['code']);
+            $this->itemAddPostMutate($insertArray);
 
             // Redirect  to items list
             return $this->redirectToList();
@@ -304,12 +337,12 @@ class CRUDController extends pageController
     public function itemEditGet ($tableCode, $id)
     {
         // Check table  by  code
-        if ($this->checkTable($tableCode)) {
+        if ($this->setTable($tableCode, 'fieldsEdit')) {
             // Check row  by  ID
             if ($this->checkRow($id)) {
                 // Mutate fields
-                foreach ($this->Data['table']->fields as $key => $field) {
-                    $this->Data['table']->fields[$key] = $this->{$this->fieldClass($field)}->mutateEditGet($field);
+                foreach ($this->Data['table']->fieldsEdit as $key => $field) {
+                    $this->Data['table']->fieldsEdit[$key] = $this->{$this->fieldClass($field)}->mutateEditGet($field);
                 }
 
                 return view('crud.pages.edit', $this->Data);
@@ -328,11 +361,12 @@ class CRUDController extends pageController
     public function itemEditPost (Request $request, $tableCode, $id)
     {
         // Check table  by  code
-        if ($this->checkTable($tableCode)) {
+        if ($this->setTable($tableCode)) {
             // Check row  by  ID
             if ($this->checkRow($id)) {
                 // Validate
-                $validator = Validator::make($request->all(), $this->validateArray($this->Data['table']->fields));
+                $this->createValidateArray($this->Data['table']->fields, $id);
+                $validator = Validator::make($request->all(), $this->validateArray);
 
                 // return form
                 if ($validator->fails()) {
@@ -354,7 +388,7 @@ class CRUDController extends pageController
                 DB::table($this->Data['table']->code)->where('id', $id)->update($updateArray);
 
                 // Extra
-                $this->itemEditPostMutate($rowModel, $updateArray);
+                $this->itemEditPostMutate($updateArray, $rowModel);
 
                 return $this->redirectToList();
             }
@@ -371,7 +405,7 @@ class CRUDController extends pageController
     public function itemDelete ($tableCode, $id)
     {
         // Check table  by  code
-        if ($this->checkTable($tableCode)) {
+        if ($this->setTable($tableCode)) {
             // Check row  by  ID
             if ($this->checkRow($id)) {
                 // Mutate row
@@ -416,10 +450,10 @@ class CRUDController extends pageController
      * @param string  $tableCode table code  (SLUG)
      * @return boolean
      */
-    protected function checkTable($tableCode)
+    protected function setTable($tableCode, $relations = 'fields')
     {
         //  Get  table   by code
-        $tableModel = Table::with('fields')->where('url', $tableCode)->first();
+        $tableModel = Table::with($relations)->where('url', $tableCode)->first();
 
         if ($tableModel) {
             $this->Data['table'] = $tableModel;
@@ -456,28 +490,21 @@ class CRUDController extends pageController
      * @param array  $fields table  fields  array
      * @return array
      */
-    protected function validateArray ($fields)
+    protected function createValidateArray ($fields, $id = null)
     {
-        $validateArray = [];
-
         foreach ($fields as $key => $value) {
-
-            // implement require fla
+            // implement require property
             if ($value->flag_required) {
-                $validateArray [$value->code] = 'required';
+                $this->validateArray [$value->code][] = 'required';
             }
 
-            // implement unique flag
-            /*
+            // implement unique property
             if ($value->flag_unique) {
-                $validateArray [$value->code] .= '|unique:'.$this->DATA ['CurrentTable']->code.','.$value->code;
-                if ($id) $validateArray [$value->code] .= ','.$id;
+                $uniqueRule = 'unique:'.$this->Data['table']->code.','.$value->code;
+                if ($id) $uniqueRule .= ','.$id;
+                $this->validateArray [$value->code][] = $uniqueRule;
             }
-            */
-
         }
-
-        return $validateArray;
     }
 
     /**
@@ -504,11 +531,11 @@ class CRUDController extends pageController
      * Action after insert row data
      *
      * @param array  $insertData row data after insert
-     * @return boolean
+     * @return void
      */
     protected function itemAddPostMutate ($insertData)
     {
-        return true;
+
     }
 
     /**
@@ -516,21 +543,21 @@ class CRUDController extends pageController
      *
      * @param array  $oldData row data before update
      * @param array  $updatedData row data after update
-     * @return boolean
+     * @return void
      */
     protected function itemEditPostMutate ($oldData, $updatedData)
     {
-        return true;
+
     }
 
     /**
      * Action after delete row data
      *
      * @param array  $rowData deleting row data
-     * @return boolean
+     * @return void
      */
     protected function itemDeleteMutate ($rowData)
     {
-        return true;
+
     }
 }

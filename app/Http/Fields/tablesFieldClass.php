@@ -8,14 +8,14 @@ use DB;
 use Validator;
 use Illuminate\Http\Request;
 
-class selectFieldClass  extends fieldClass
+class tablesFieldClass  extends fieldClass
 {
     /**
      * Values  for select
      *
      * @var array
      */
-        private $options = [];
+    private $options = [];
 
     /**
      * Mutate field for adding  form
@@ -35,7 +35,7 @@ class selectFieldClass  extends fieldClass
      * @param  array $field
      * @return array
      */
-    public function mutateList ($value, $field)
+    public function mutateList ($value, $field =  null)
     {
         // Set select's options if they  don't  exist
         if (!isset($this->options[$field->code]))  {
@@ -48,9 +48,11 @@ class selectFieldClass  extends fieldClass
 
         // Mutate value
         foreach ($this->options[$field->code] as $option) {
-            if ($value == $option->id) $value = $option->name;
+            if ($value == $option->id) {
+                $value = $option->name;
 
-            return $value;
+                return $value;
+            }
         }
     }
 

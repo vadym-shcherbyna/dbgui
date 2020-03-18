@@ -50,4 +50,14 @@ class pageController extends Controller
     {
         return $field->type->code.'FieldClass';
     }
+
+    /**
+     * Return field class name  by type
+     *
+     * @return string
+     */
+    public function fieldClassByType ($type)
+    {
+        return $type->code.'FieldClass';
+    }
 }

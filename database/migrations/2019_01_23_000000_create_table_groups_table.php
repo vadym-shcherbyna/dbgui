@@ -14,13 +14,13 @@ class CreateTableGroupsTable extends Migration
     public function up()
     {
         Schema::create('table_groups', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
             $table->string('name');
             $table->integer('weight')->default(0);
         });
 
         // Populate
-        DB::table('table_groups')->insert(['id' => 1, 'name' => 'Data', 'weight' => 100]);
+        DB::table('table_groups')->insert(['id' => 1, 'name' => 'System', 'weight' => 100]);
         DB::table('table_groups')->insert(['id' => 2, 'name' => 'Accounts', 'weight' => 90]);
     }
 

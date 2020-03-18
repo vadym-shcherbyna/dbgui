@@ -1,7 +1,7 @@
 									
 	@if($items->total()  > 10)
 		
-		<select class="form-control item-list-pagination" data-url="{{ $table->code }}">
+		<select class="form-control item-list-numrows" data-url="{{ $table->code }}">
 										
 			@foreach($paginationArray as $pagination)						
 										

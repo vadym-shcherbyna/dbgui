@@ -15,13 +15,13 @@
 	
 	// Event for pagination
 	
-		$("body").on("change", '.item-list-pagination', function(){
+		$("body").on("change", '.item-list-numrows', function(){
 
-			// <select class="form-control item-list-pagination" data-url="{{ $table->code }}">
+			// <select class="form-control item-list-numrows" data-url="{{ $table->code }}">
 			var url  = $(this).data('url');
 			var value =  $(this).val();
 
-			window.location = '/crud/' + url + '/pagination/' + value;
+			window.location = '/crud/' + url + '/numrows/' + value;
 						
 		})	;		
 	
