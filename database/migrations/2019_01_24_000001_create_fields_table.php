@@ -15,14 +15,8 @@ class CreateFieldsTable extends Migration
     {
         Schema::create('fields', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('field_type_id');
-            $table->foreign('field_type_id')
-                ->references('id')->on('field_types')
-                ->onDelete('cascade');
-            $table->unsignedInteger('table_id');
-            $table->foreign('table_id')
-                ->references('id')->on('tables')
-                ->onDelete('cascade');
+            $table->unsignedBigInteger('field_type_id');
+            $table->unsignedBigInteger('table_id');
             $table->string('name');
             $table->string('code');
             $table->integer('weight')->default(0)->nullable();
@@ -33,6 +27,12 @@ class CreateFieldsTable extends Migration
             $table->boolean('flag_unique')->default(0);
             $table->string('default_value')->nullable();
             $table->integer('linked_table_id')->default(0);
+            $table->foreign('field_type_id')
+                ->references('id')->on('field_types')
+                ->onDelete('cascade');
+            $table->foreign('table_id')
+                ->references('id')->on('tables')
+                ->onDelete('cascade');
         });
 
         // Populate

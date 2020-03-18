@@ -13,11 +13,11 @@ class UpdateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->unsignedInteger('user_group_id')->default(3);
+        Schema::table('users', function (Blueprint $table) {            			
+			$table->unsignedBigInteger('user_group_id')->default(3);			
             $table->foreign('user_group_id')
                 ->references('id')->on('user_groups')
-                ->onDelete('cascade');
+                ->onDelete('cascade');								
         });
     }
 
