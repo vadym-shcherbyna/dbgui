@@ -74,6 +74,9 @@ class CRUDController extends pageController
      */
     public function itemsList ($tableCode)
     {
+        // init row model
+        $this->Data['row'] = null;
+
         // Check table code
         $this->Data['table'] = Table::with('fieldsView')->with('filters')->where('url', $tableCode)->first();
 
@@ -361,11 +364,11 @@ class CRUDController extends pageController
     public function itemEditPost (Request $request, $tableCode, $id)
     {
         // Check table  by  code
-        if ($this->setTable($tableCode)) {
+        if ($this->setTable($tableCode, 'fieldsEdit')) {
             // Check row  by  ID
             if ($this->checkRow($id)) {
                 // Validate
-                $this->createValidateArray($this->Data['table']->fields, $id);
+                $this->createValidateArray($this->Data['table']->fieldsEdit);
                 $validator = Validator::make($request->all(), $this->validateArray);
 
                 // return form
@@ -377,7 +380,7 @@ class CRUDController extends pageController
 
                 // Mutate POST data
                 $updateArray = [];
-                foreach ($this->Data['table']->fields as $key => $field) {
+                foreach ($this->Data['table']->fieldsEdit as $key => $field) {
                     $updateArray [$field->code] = $this->{$this->fieldClass($field)}->mutateEditPost($request, $field);
                 }
 
@@ -490,7 +493,7 @@ class CRUDController extends pageController
      * @param array  $fields table  fields  array
      * @return array
      */
-    protected function createValidateArray ($fields, $id = null)
+    protected function createValidateArray ($fields)
     {
         foreach ($fields as $key => $value) {
             // implement require property
@@ -501,7 +504,7 @@ class CRUDController extends pageController
             // implement unique property
             if ($value->flag_unique) {
                 $uniqueRule = 'unique:'.$this->Data['table']->code.','.$value->code;
-                if ($id) $uniqueRule .= ','.$id;
+                if ($this->Data['row']) $uniqueRule .= ','.$this->Data['row']->id;
                 $this->validateArray [$value->code][] = $uniqueRule;
             }
         }

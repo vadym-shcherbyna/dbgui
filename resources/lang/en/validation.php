@@ -133,7 +133,8 @@ return [
         ],
     ],
 
-    'unique_by_table' => 'The :attribute has already been taken.',
+    'column_exists' => 'The :attribute has already been taken.',
+    'column_name' => 'The :attribute is invalid for SQL column  name.',
 
     /*
     |--------------------------------------------------------------------------

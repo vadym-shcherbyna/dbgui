@@ -3,6 +3,8 @@
 namespace App\Http\Fields;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 class fieldClass
 {
@@ -113,5 +115,19 @@ class fieldClass
         }
 
         return $field;
+    }
+
+    /**
+     * Rename  field
+     *
+     * @param  array $updateData inserted array
+     * @param  object $dbData row model from database
+     * @param object $tableModel table model
+     * @return void
+     */
+    public function updateFields($updateData, $dbData,  $tableModel)  {
+        Schema::table($tableModel->code, function (Blueprint $table) use ($dbData, $updateData) {
+            $table->renameColumn($dbData->code, $updateData ['code']);
+        });
     }
 }

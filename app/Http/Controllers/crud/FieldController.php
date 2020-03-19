@@ -6,18 +6,12 @@ use App\Http\Controllers\crud\CRUDController;
 use Illuminate\Http\Request;
 use App\FieldType;
 use App\Table;
-use App\Rules\FieldCode;
+use App\Field;
+use App\Rules\ColumnExists;
+use App\Rules\ColumnName;
 
 class FieldController extends CRUDController
 {
-    /**
-     * table Id
-     *
-     * @global private
-     * @var integer
-     */
-    private $tableId = 0;
-
     /**
      * Call itemAddPost with code 'fields'
      *
@@ -26,8 +20,6 @@ class FieldController extends CRUDController
      */
     public function fieldAddPost (Request $request)
     {
-        $this->tableId  = $request->table_id;
-        
         return parent::itemAddPost ($request, 'fields');
     }
 
@@ -50,15 +42,36 @@ class FieldController extends CRUDController
     }
 
     /**
+     * Call itemEditPost with code 'tables'
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param integer  $id row ID
+     * @return CRUDController
+     */
+    public function fieldEditPost (Request $request, $id)
+    {
+        return parent::itemEditPost ($request, 'fields', $id);
+    }
+
+    /**
      * Action after update row data
      *
      * @param array  $updateData post data  for updating
-     * @param array  $dbData row data from database
+     * @param object  $dbData row model from database
      * @return void
      */
     protected function itemEditPostMutate ($updateData, $dbData)
     {
-        
+        // Checking
+        if ($updateData ['code'] != $dbData->code) {
+            // Get field  type
+            $fieldType = FieldType::where('id', $dbData->field_type_id)->first();
+
+            // Get table data
+            $tableModel = Table::where('id', $dbData->table_id)->first();
+
+            $this->{$this->fieldClassByType($fieldType)}->updateFields($updateData, $dbData,  $tableModel);
+        }
     }
 
     /**
@@ -78,12 +91,13 @@ class FieldController extends CRUDController
      * @param array  $fields table  fields  array
      * @return array
      */
-    protected function createValidateArray ($fields, $id = null)
+    protected function createValidateArray ($fields)
     {
-        // Add rule for fieldcode
-        $this->validateArray ['code'][] = new FieldCode($this->tableId);
+        // Add custom rules for field code
+        $this->validateArray ['code'][] = new ColumnExists($this->Data['row']);
+        $this->validateArray ['code'][] = new ColumnName();
 
         // Call main func
-        parent::createValidateArray($fields, $id);
+        parent::createValidateArray($fields);
     }
 }
