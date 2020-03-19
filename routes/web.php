@@ -5,7 +5,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Auth
+// Auth controllers
 Route::get('auth/login', 'auth\AuthController@loginForm')->name('login');
 Route::post('auth/login', 'auth\AuthController@loginPost');
 Route::get('auth/logout', 'auth\AuthController@logout')->name('logout');
@@ -23,11 +23,11 @@ Route::get('crud/fields/delete/{id}', 'crud\FieldController@fieldDelete')->middl
 // Crud index (list)
 Route::get('crud', 'crud\CRUDController@index')->name('crud')->middleware('crud');
 
-// List
+// List of  items
 Route::get('crud/{table}', 'crud\CRUDController@itemsList')->middleware('crud');
 Route::get('crud/{table}/list', 'crud\CRUDController@itemsList')->middleware('crud');
 
-// List filter
+// Set filter
 Route::get('crud/{table}/filter/{field}/value/{value}', 'crud\CRUDController@itemsListFilter')->middleware('crud');
 
 // Pagination
@@ -36,7 +36,7 @@ Route::get('crud/{table}/numrows/{value}', 'crud\CRUDController@itemsListNumRows
 // Sorting
 Route::get('crud/{table}/sort/{field}/direction/{value}', 'crud\CRUDController@itemsListSorting')->middleware('crud');
 
-// Flags
+// Set flags
 Route::get('crud/{table}/flag/{field}/id/{id}', 'crud\CRUDController@itemsListFlag')->middleware('crud');
 
 // Add item
