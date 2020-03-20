@@ -23,13 +23,13 @@ class TableController extends CRUDController
     /**
      * Action after insert row data
      *
-     * @param array  $insertData row data after insert
+     * @param  array $insertArray
      * @return void
      */
-    protected function itemAddPostMutate ($insertData)
+    protected function itemAddPostMutate ($insertArray)
     {
         //  Create table with one  row
-        Schema::create($insertData ['code'], function (Blueprint $table) {
+        Schema::create($insertArray ['code'], function (Blueprint $table) {
             $table->increments('id');
         });
     }

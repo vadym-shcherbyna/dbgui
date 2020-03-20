@@ -57,6 +57,14 @@ class CRUDController extends pageController
     protected  $validateArray =  [];
 
     /**
+     * Locked array - using fields
+     *
+     * @global public
+     * @var array
+     */
+    public $systemColumns = ['id', 'linked_data_id'];
+
+    /**
      * Controller for index page
      *
      * @return Response
@@ -315,10 +323,13 @@ class CRUDController extends pageController
                     ->withInput();
             }
 
-            // Mutate POST data	 By Fields Classes
+            // Inserting array for database
             $insertArray = [];
+
+            // Mutate POST data	 By Fields Classes
             foreach ($this->Data['table']->fields as $key => $field) {
-                $insertArray [$field->code] = $this->{$this->fieldClass($field)}->mutateAddPost($request, $field);
+                // Mutate  insertArray adding new  keys with values from request (POST)
+                $insertArray = $this->{$this->fieldClass($field)}->mutateAddPost($request, $field, $insertArray);
             }
 
             //  Insert row
@@ -535,10 +546,10 @@ class CRUDController extends pageController
     /**
      * Action after insert row data
      *
-     * @param array  $insertData row data after insert
+     * @param  array $insertArray
      * @return void
      */
-    protected function itemAddPostMutate ($insertData)
+    protected function itemAddPostMutate ($insertArray)
     {
 
     }

@@ -19,6 +19,13 @@ class fieldtypesFieldClass  extends fieldClass
     private $options = [];
 
     /**
+     * Name for linked data  id column
+     *
+     * @var string
+     */
+    const LINKED_DATA_FIELD_NAME = 'linked_data_id';
+
+    /**
      * Mutate field for adding  form
      *
      * @param  array $field
@@ -37,10 +44,35 @@ class fieldtypesFieldClass  extends fieldClass
      */
     public function mutateEditGet ($field)
     {
-        // Mutate field: get field types exept syste, fields
-        $field->options = FieldType::select('id', 'name', 'code')->where('flag_system', 0)->orderBy('id', 'ASC')->get();
+        // Field types
+        $field->options = FieldType::select('id', 'name',  'code', 'description')->orderBy('weight', 'DESC')->get();
+
+        // Linked  tables
+        $field->linked_tables = Table::query()
+            ->select('tables.id', 'tables.name')
+            ->join('fields', function ($join) {
+                $join->on('tables.id', '=', 'fields.table_id')->where('fields.code', 'name');
+            })
+            ->where('flag_system', '<>', 1)
+            ->orderBy('name', 'ASC')
+            ->get();
 
         return $field;
+    }
+
+    /**
+     * Mutate field before  adding in database
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  array $field
+     * @param  array $insertArray
+     * @return string
+     */
+    public function mutateAddPost (Request $request, $field, $insertArray)
+    {
+        $insertArray [self::LINKED_DATA_FIELD_NAME] = $request->input(self::LINKED_DATA_FIELD_NAME);
+        $insertArray [$field->code] = $request->input($field->code);
+        return $insertArray;
     }
 
     /**
@@ -59,7 +91,7 @@ class fieldtypesFieldClass  extends fieldClass
         else {
             Schema::table($tableModel->code, function (Blueprint $table) use ($code) {
                 $table->string($code, 191)->default('');
-                $table->unsignedBigInteger('linked_data_id')->default(0);
+                $table->unsignedBigInteger(self::LINKED_DATA_FIELD_NAME)->default(0);
             });
         }
     }
@@ -73,12 +105,12 @@ class fieldtypesFieldClass  extends fieldClass
      */
     public function deleteFields($itemModel, $tableModel)
     {
-        if(Schema::hasColumn($tableModel->code, 'linked_data_id')) {
+        if(Schema::hasColumn($tableModel->code, self::LINKED_DATA_FIELD_NAME)) {
             Schema::table($tableModel->code, function (Blueprint $table) use ($itemModel) {
                 $table->dropColumn($itemModel->code);
 
                 // Delete hidden  column
-                $table->dropColumn('linked_data_id');
+                $table->dropColumn(self::LINKED_DATA_FIELD_NAME);
             });
         }
     }

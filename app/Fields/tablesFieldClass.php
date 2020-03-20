@@ -69,7 +69,11 @@ class tablesFieldClass  extends fieldClass
 
         // get options for select
         if ($linkedTable) {
-            $field->options = DB::table($linkedTable->code)->select('id', 'name')->orderBy('id', 'ASC')->get();
+            if ($linkedTable->code == 'tables') {
+                $field->options = Table::select('id', 'name')->where('flag_system', '<>', 1)->orderBy('weight', 'DESC')->get();
+            } else {
+                $field->options = DB::table($linkedTable->code)->select('id', 'name')->orderBy('id', 'ASC')->get();
+            }
         }
 
         return $field;
@@ -92,7 +96,7 @@ class tablesFieldClass  extends fieldClass
             $linkedTable = Table::find($field->linked_data_id);
 
             if ($linkedTable) {
-                    $field->options = DB::table($linkedTable->code)->select('id', 'name')->orderBy('name', 'ASC')->get();
+                $field->options = DB::table($linkedTable->code)->select('id', 'name')->orderBy('weight', 'DESC')->get();
             }
         }
 

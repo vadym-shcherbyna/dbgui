@@ -133,7 +133,7 @@ return [
         ],
     ],
 
-    'column_exists' => 'The :attribute has already been taken.',
+    'column_exists' => 'The :attribute has already been taken1.',
     'column_name' => 'The :attribute is invalid for SQL column  name.',
 
     /*

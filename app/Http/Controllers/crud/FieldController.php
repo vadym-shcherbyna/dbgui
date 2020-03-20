@@ -26,19 +26,19 @@ class FieldController extends CRUDController
     /**
      * Action after insert row data
      *
-     * @param array  $insertData row data after insert
+     * @param  array $insertArray
      * @return void
      */
-    protected function itemAddPostMutate ($insertData)
+    protected function itemAddPostMutate ($insertArray)
     {
         // Get field  type
-        $fieldTypeModel = FieldType::where('id', $insertData ['field_type_id'])->first();
+        $fieldTypeModel = FieldType::where('id', $insertArray ['field_type_id'])->first();
 
         // Get table data
-        $tableModel = Table::where('id', $insertData ['table_id'])->first();
+        $tableModel = Table::where('id', $insertArray ['table_id'])->first();
 
         //  Call Field class method  fir creating field
-        $this->{$this->fieldClassByType($fieldTypeModel)}->createFields($insertData, $tableModel);
+        $this->{$this->fieldClassByType($fieldTypeModel)}->createFields($insertArray, $tableModel);
     }
 
     /**

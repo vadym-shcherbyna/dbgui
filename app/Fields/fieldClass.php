@@ -36,11 +36,13 @@ class fieldClass
      *
      * @param  \Illuminate\Http\Request $request
      * @param  array $field
+     * @param  array $insertArray
      * @return string
      */
-    public function mutateAddPost (Request $request, $field)
+    public function mutateAddPost (Request $request, $field, $insertArray)
     {
-        return $request->input($field->code);
+        $insertArray [$field->code] = $request->input($field->code);
+        return $insertArray;
     }
 
     /**
@@ -120,7 +122,6 @@ class fieldClass
     /**
      * Create field/fields in  table
      *
-     * @param  array $insertData inserting data
      * @param  object $table current table model
      * @return void
      */

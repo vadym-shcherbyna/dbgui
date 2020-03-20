@@ -15,16 +15,16 @@ class ColumnExists implements Rule
      *
      * @var object
      */
-    private $fieldClass;
+    private $crudClass;
 
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct($fieldClass)
+    public function __construct($crudClass)
     {
-        $this->fieldClass = $fieldClass;
+        $this->crudClass = $crudClass;
     }
 
     /**
@@ -42,17 +42,15 @@ class ColumnExists implements Rule
             $tableId = request()->input('table_id');
             $field = Field::where('table_id', $tableId)->where('code', $value)->first();
         } else {
-            $tableId = $this->fieldClass->Data['item']->table_id;
-            $itemId = $this->fieldClass->Data['item']->id;
+            $tableId = $this->crudClass->Data['item']->table_id;
+            $itemId = $this->crudClass->Data['item']->id;
             $field = Field::where('id', '<>', $itemId)->where('table_id', $tableId)->where('code', $value)->first();
         }
 
         if ($field)  return false;
 
-        // Check unregistered fields
-        $tableModel = Table::find($tableId);
-
-        if(Schema::hasColumn($tableModel->code, $value)) {
+        // Check system columns
+        if (in_array($value, $this->crudClass->systemColumns)) {
             return false;
         }
 

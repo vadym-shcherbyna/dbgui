@@ -92,8 +92,17 @@
 		$("body").on("change", "#fieldTypesSelect", function(){
 			var currentOption = $(this).find(':selected').data('code');
 			if (currentOption == 'tables') {
-				alert ('triggered');
+				$('#linkedDataId').val($('#linkedDataTables').val());
+				$('#linkedDataTablesLayout').removeClass('d-none');
+			} else {
+				$('#linkedDataId').val('0');
+				$('#linkedDataTablesLayout').addClass('d-none');
 			}
+		})	;
+
+		// Handler for linkedDataTables changing
+		$("body").on("change", "#linkedDataTables", function(){
+			$('#linkedDataId').val($('#linkedDataTables').val());
 		})	;
 		
 	});

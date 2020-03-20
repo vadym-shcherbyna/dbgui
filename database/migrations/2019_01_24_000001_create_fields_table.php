@@ -37,15 +37,15 @@ class CreateFieldsTable extends Migration
 
         // Populate
         // Table groups fields
-        DB::table('fields')->insert(['table_id' => 4, 'field_type_id' => 1, 'name' => 'Name', 'code' => 'name', 'weight' => 100, 'flag_required' => 1, 'flag_view' => 1]);
-        DB::table('fields')->insert(['table_id' => 4, 'field_type_id' => 7, 'name' => 'Weight', 'code' => 'weight', 'weight' => 90, 'flag_required' => 1, 'flag_view' => 1, 'default_value' => 100]);
+        DB::table('fields')->insert(['table_id' => 4, 'field_type_id' => 7, 'name' => 'Weight', 'code' => 'weight', 'weight' => 100, 'flag_required' => 1, 'flag_view' => 1, 'default_value' => 100]);
+        DB::table('fields')->insert(['table_id' => 4, 'field_type_id' => 1, 'name' => 'Name', 'code' => 'name', 'weight' => 90, 'flag_required' => 1, 'flag_view' => 1]);
 
         // Table fields
         DB::table('fields')->insert(['table_id' => 1, 'field_type_id' => 7, 'name' => 'Weight', 'code' => 'weight', 'weight' => 130, 'flag_required' => 1, 'flag_view' => 1, 'default_value' => 100]);
         DB::table('fields')->insert(['table_id' => 1, 'field_type_id' => 6, 'name' => 'Menu group', 'code' => 'table_group_id', 'weight' => 120, 'flag_required' => 1, 'flag_filter' => 1, 'linked_data_id' => 4]);
-        DB::table('fields')->insert(['table_id' => 1, 'field_type_id' => 1, 'name' => 'Code', 'code' => 'code', 'weight' => 110, 'flag_required' => 1, 'flag_view' => 1, 'flag_unique'  => 1]);
-        DB::table('fields')->insert(['table_id' => 1, 'field_type_id' => 1, 'name' => 'Url', 'code' => 'url', 'weight' => 100, 'flag_required' => 1, 'flag_view' => 1]);
-        DB::table('fields')->insert(['table_id' => 1, 'field_type_id' => 1, 'name' => 'Name', 'code' => 'name', 'weight' => 90, 'flag_required' => 1, 'flag_view' => 1]);
+        DB::table('fields')->insert(['table_id' => 1, 'field_type_id' => 1, 'name' => 'Name', 'code' => 'name', 'weight' => 110, 'flag_required' => 1, 'flag_view' => 1]);
+        DB::table('fields')->insert(['table_id' => 1, 'field_type_id' => 1, 'name' => 'Code', 'code' => 'code', 'weight' => 100, 'flag_required' => 1, 'flag_view' => 1, 'flag_unique'  => 1]);
+        DB::table('fields')->insert(['table_id' => 1, 'field_type_id' => 1, 'name' => 'Url', 'code' => 'url', 'weight' => 90, 'flag_required' => 1, 'flag_view' => 1]);
         DB::table('fields')->insert(['table_id' => 1, 'field_type_id' => 1, 'name' => 'Item name', 'code' => 'item_name', 'weight' => 80]);
         DB::table('fields')->insert(['table_id' => 1, 'field_type_id' => 1, 'name' => 'FA Icon', 'code' => 'fa', 'weight' => 70,  'default_value' =>  'table']);
 
