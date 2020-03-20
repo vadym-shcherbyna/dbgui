@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Fields;
+namespace App\Fields;
 
-use App\Http\Fields\fieldClass;
+use App\Fields\fieldClass;
 
 class flagFieldClass  extends fieldClass
 {

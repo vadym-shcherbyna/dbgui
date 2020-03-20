@@ -14,3 +14,11 @@
 `'crud' => \App\Http\Middleware\CheckAdmin::class`
     
  - Run migrations
+ # Code features
+  - Migrations + seeding
+  - Custom validation rules
+  - Custom middleware
+  - Manage tables and columns
+  - 
+  
+  

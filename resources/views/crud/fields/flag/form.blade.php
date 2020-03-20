@@ -3,8 +3,8 @@
 	<input type="hidden" name="{{ $field->code }}" value="0">
 
     <input type="checkbox" class="form-check-input" id="{{ $field->code }}_input" name="{{ $field->code }}" value="1"
-	    @isset($row)
-            @if(old($field->code, $row->{$field->code})) checked @endif>
+	    @isset($item)
+            @if(old($field->code, $item->{$field->code})) checked @endif>
         @else
             @if(old($field->code, $field->default_value)) checked @endif>
         @endisset

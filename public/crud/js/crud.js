@@ -86,7 +86,14 @@
 	
 	// For  custom code
 
-	$(document).ready(function() {
-			
+	$(document).ready(function()
+	{
+		// Handler for Field Type
+		$("body").on("change", "#fieldTypesSelect", function(){
+			var currentOption = $(this).find(':selected').data('code');
+			if (currentOption == 'tables') {
+				alert ('triggered');
+			}
+		})	;
 		
 	});

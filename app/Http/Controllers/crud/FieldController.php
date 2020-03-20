@@ -32,13 +32,13 @@ class FieldController extends CRUDController
     protected function itemAddPostMutate ($insertData)
     {
         // Get field  type
-        $fieldType = FieldType::where('id', $insertData ['field_type_id'])->first();
+        $fieldTypeModel = FieldType::where('id', $insertData ['field_type_id'])->first();
 
         // Get table data
-        $table = Table::where('id', $insertData ['table_id'])->first();
+        $tableModel = Table::where('id', $insertData ['table_id'])->first();
 
         //  Call Field class method  fir creating field
-        $this->{$this->fieldClassByType($fieldType)}->createFields($insertData, $table);
+        $this->{$this->fieldClassByType($fieldTypeModel)}->createFields($insertData, $tableModel);
     }
 
     /**
@@ -75,14 +75,32 @@ class FieldController extends CRUDController
     }
 
     /**
+     * Call itemDelete with code 'fields'
+     *
+     * @param integer  $id row ID
+     * @return CRUDController
+     */
+    public function fieldDelete ($id)
+    {
+        return parent::itemDelete ('fields',  $id);
+    }
+
+    /**
      * Action after delete row data
+     * Deleting table column
      *
      * @param array  $rowData deleting row data
      * @return void
      */
-    protected function itemDeleteMutate ($rowData)
+    protected function itemDeleteMutate ($itemModel)
     {
-        
+        // Get field  type
+        $fieldType = FieldType::where('id', $itemModel->field_type_id)->first();
+
+        // Get table data
+        $tableModel = Table::where('id', $itemModel->table_id)->first();
+
+        $this->{$this->fieldClassByType($fieldType)}->deleteFields($itemModel,  $tableModel);
     }
 
     /**
@@ -94,7 +112,7 @@ class FieldController extends CRUDController
     protected function createValidateArray ($fields)
     {
         // Add custom rules for field code
-        $this->validateArray ['code'][] = new ColumnExists($this->Data['row']);
+        $this->validateArray ['code'][] = new ColumnExists($this);
         $this->validateArray ['code'][] = new ColumnName();
 
         // Call main func

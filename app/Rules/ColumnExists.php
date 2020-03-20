@@ -4,24 +4,27 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 use App\Field;
+use App\Table;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 class ColumnExists implements Rule
 {
     /**
-     * Row data
+     * item Id
      *
      * @var object
      */
-    private $rowModel;
+    private $fieldClass;
 
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct($rowModel)
+    public function __construct($fieldClass)
     {
-        $this->rowModel = $rowModel;
+        $this->fieldClass = $fieldClass;
     }
 
     /**
@@ -29,25 +32,31 @@ class ColumnExists implements Rule
      *
      * @param  string  $attribute
      * @param  mixed  $value
-     * @return bool
+     * @return boolean
      */
     public function passes($attribute, $value)
     {
-        $rowModel
-        // Set table ID  (table linked to row)
-        $fieldModel = Field::find($id);
-        $this->tableId  = $fieldModel->table_id;
-
-        // Set row ID
-        $this->rowId  = $id;
-
-        if ($this->rowId  > 0) {
-            $field = Field::where('id', '<>', $this->rowId)->where('table_id', $this->tableId)->where('code', $value)->first();
+        // Check registered fields
+        // Need to checking row for unique in table: table ID, item ID, item code
+        if (request()->has('table_id')) {
+            $tableId = request()->input('table_id');
+            $field = Field::where('table_id', $tableId)->where('code', $value)->first();
         } else {
-            $field = Field::where('table_id', $this->tableId)->where('code', $value)->first();
+            $tableId = $this->fieldClass->Data['item']->table_id;
+            $itemId = $this->fieldClass->Data['item']->id;
+            $field = Field::where('id', '<>', $itemId)->where('table_id', $tableId)->where('code', $value)->first();
         }
 
-		return ($field) ? false : true;
+        if ($field)  return false;
+
+        // Check unregistered fields
+        $tableModel = Table::find($tableId);
+
+        if(Schema::hasColumn($tableModel->code, $value)) {
+            return false;
+        }
+
+		return  true;
     }
 
     /**

@@ -75,7 +75,7 @@ class CRUDController extends pageController
     public function itemsList ($tableCode)
     {
         // init row model
-        $this->Data['row'] = null;
+        $this->Data['item'] = null;
 
         // Check table code
         $this->Data['table'] = Table::with('fieldsView')->with('filters')->where('url', $tableCode)->first();
@@ -114,7 +114,9 @@ class CRUDController extends pageController
                 $filters  = request()->session()->get('filters.'.$this->Data['table']->code);
 
                 foreach($filters as $filter) {
-                    $this->Data['items'] = $this->{$this->fieldClass($filter['field'])}->setFilterWhere($this->Data['items'], $filter['field'],  $filter['value']);
+                    if ($fieldData = $this->getTableFieldById($filter['field'])) {
+                        $this->Data['items'] = $this->{$this->fieldClass($fieldData)}->setFilterWhere($this->Data['items'], $fieldData,  $filter['value']);
+                    }
                 }
             }
 
@@ -185,7 +187,7 @@ class CRUDController extends pageController
                     request()->session()->forget('filters.'.$this->Data['table']->code.'.'.$fieldID);
                 } else {
                     //  Add filter into session
-                    request()->session()->put('filters.'.$this->Data['table']->code.'.'.$fieldID, ['field' =>  $field, 'value' => $value]);
+                    request()->session()->put('filters.'.$this->Data['table']->code.'.'.$fieldID, ['field' =>  $fieldID, 'value' => $value]);
                 }
             }
 
@@ -373,7 +375,7 @@ class CRUDController extends pageController
 
                 // return form
                 if ($validator->fails()) {
-                    return redirect('crud/' . $this->Data['table']->url . '/edit/' . $this->Data['row']->id)
+                    return redirect('crud/' . $this->Data['table']->url . '/edit/' . $this->Data['item']->id)
                         ->withErrors($validator)
                         ->withInput();
                 }
@@ -413,17 +415,17 @@ class CRUDController extends pageController
             if ($this->checkRow($id)) {
                 // Mutate row
                 foreach ($this->Data['table']->fields as $key => $field) {
-                    $this->{$this->fieldClass($field)}->mutateDelete($this->Data['row'], $field);
+                    $this->{$this->fieldClass($field)}->mutateDelete($this->Data['item'], $field);
                 }
 
                 // Get row
-                $row = DB::table($this->Data['table']->code)->where('id', $id)->first();
+                $itemModel = DB::table($this->Data['table']->code)->where('id', $id)->first();
 
                 // Delete row
                 DB::table($this->Data['table']->code)->where('id', $id)->delete();
 
                 // Extra func after delete row
-                $this->itemDeleteMutate($row);
+                $this->itemDeleteMutate($itemModel);
             }
 
             return $this->redirectToList();
@@ -480,7 +482,7 @@ class CRUDController extends pageController
         $row = DB::table($this->Data['table']->code)->where('id', $id)->first();
 
         if ($row) {
-            $this->Data['row'] = $row;
+            $this->Data['item'] = $row;
             return true;
         }
 
@@ -504,7 +506,7 @@ class CRUDController extends pageController
             // implement unique property
             if ($value->flag_unique) {
                 $uniqueRule = 'unique:'.$this->Data['table']->code.','.$value->code;
-                if ($this->Data['row']) $uniqueRule .= ','.$this->Data['row']->id;
+                if (isset($this->Data['item']) && $this->Data['item']) $uniqueRule .= ','.$this->Data['item']->id;
                 $this->validateArray [$value->code][] = $uniqueRule;
             }
         }

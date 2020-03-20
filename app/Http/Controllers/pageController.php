@@ -31,7 +31,7 @@ class pageController extends Controller
         // Init all field classes (types)
         foreach ($fieldGroups as $field) {
             $fieldName = $field->code.'FieldClass';
-            $fieldClass = 'App\Http\Fields\\'.$field->code.'FieldClass';
+            $fieldClass = 'App\Fields\\'.$field->code.'FieldClass';
             $this->$fieldName = new $fieldClass;
         }
 

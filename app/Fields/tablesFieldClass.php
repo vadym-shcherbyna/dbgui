@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Fields;
+namespace App\Fields;
 
-use App\Http\Fields\fieldClass;
+use App\Fields\fieldClass;
 use App\Table;
 use DB;
 use Validator;
@@ -39,7 +39,7 @@ class tablesFieldClass  extends fieldClass
     {
         // Set select's options if they  don't  exist
         if (!isset($this->options[$field->code]))  {
-            $linkedTable = Table::find($field->linked_table_id);
+            $linkedTable = Table::find($field->linked_data_id);
 
             if ($linkedTable) {
                 $this->options[$field->code] = DB::table($linkedTable->code)->orderBy('id', 'ASC')->get();
@@ -65,7 +65,7 @@ class tablesFieldClass  extends fieldClass
     public function mutateEditGet ($field)
     {
         // Get  linked table
-        $linkedTable = Table::find($field->linked_table_id);
+        $linkedTable = Table::find($field->linked_data_id);
 
         // get options for select
         if ($linkedTable) {
@@ -89,7 +89,7 @@ class tablesFieldClass  extends fieldClass
         if (isset($this->options[$field->code]))  {
             $field->options =  $this->options[$field->code];
         } else {
-            $linkedTable = Table::find($field->linked_table_id);
+            $linkedTable = Table::find($field->linked_data_id);
 
             if ($linkedTable) {
                     $field->options = DB::table($linkedTable->code)->select('id', 'name')->orderBy('name', 'ASC')->get();

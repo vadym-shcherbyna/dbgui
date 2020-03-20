@@ -20,8 +20,8 @@ class CreateTableGroupsTable extends Migration
         });
 
         // Populate
-        DB::table('table_groups')->insert(['id' => 1, 'name' => 'Accounts', 'weight' => 100]);
-        DB::table('table_groups')->insert(['id' => 2, 'name' => 'System', 'weight' => 90]);
+        DB::table('table_groups')->insert(['id' => 1, 'name' => 'System', 'weight' => 100]);
+        DB::table('table_groups')->insert(['id' => 2, 'name' => 'Accounts', 'weight' => 90]);
     }
 
     /**

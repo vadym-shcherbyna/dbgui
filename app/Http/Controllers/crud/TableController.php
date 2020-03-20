@@ -77,8 +77,8 @@ class TableController extends CRUDController
      * @param array  $rowData deleting row data
      * @return void
      */
-    protected function itemDeleteMutate ($rowData)
+    protected function itemDeleteMutate ($itemModel)
     {
-        Schema::dropIfExists($rowData->code);
+        Schema::dropIfExists($itemModel->code);
     }
 }

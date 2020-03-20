@@ -18,21 +18,15 @@
 						<ul class="nav nav-tabs card-header-tabs">
 							
 							<li class="nav-item">
-								
 								<a class="nav-link" href="{{ env('APP_URL') }}/crud/{{ $table->url }}"><i class="fas fa-list fa-fw mr-2"></i> List of {{ $table->name }}</a>
-								
 							</li>
 							
 							<li class="nav-item">
-								
 								<a class="nav-link" href="{{ env('APP_URL') }}/crud/{{ $table->url }}/add"><i class="fas fa-plus-square fa-fw mr-2"></i> Add  {{ $table->item_name }}</a>
-								
 							</li>
 							
 							<li class="nav-item">
-								
 								<a class="nav-link active" href="#"><i class="fas fa-edit fa-fw mr-2"></i> Edit  {{ $table->item_name }}</a>
-								
 							</li>							
 							
 						</ul>
@@ -42,7 +36,7 @@
 					<div class="card-body">
 
 						
-						<form action="{{ env('APP_URL') }}/crud/{{ $table->url }}/edit/{{ $row->id }}" method="POST" enctype="multipart/form-data">
+						<form action="{{ env('APP_URL') }}/crud/{{ $table->url }}/edit/{{ $item->id }}" method="POST" enctype="multipart/form-data">
 						
 							 @csrf
 								 
@@ -66,7 +60,7 @@
 																				
 							@foreach ($table->fieldsEdit as $field)
 														
-								@include('crud.fields.'.$field->type->code.'.form', ['field' => $field, 'row' => $row])
+								@include('crud.fields.'.$field->type->code.'.form', ['field' => $field, 'item' => $item])
 								
 							@endforeach
 								

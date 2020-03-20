@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Fields;
+namespace App\Fields;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -118,6 +118,26 @@ class fieldClass
     }
 
     /**
+     * Create field/fields in  table
+     *
+     * @param  array $insertData inserting data
+     * @param  object $table current table model
+     * @return void
+     */
+    public function createFields ($insertData, $tableModel)
+    {
+        $code = $insertData ['code'];
+
+        if(Schema::hasColumn($tableModel->code, $code)) {
+        }
+        else {
+            Schema::table($tableModel->code, function (Blueprint $table) use ($code) {
+                $table->string($code, 191)->default('');
+            });
+        }
+    }
+
+    /**
      * Rename  field
      *
      * @param  array $updateData inserted array
@@ -126,8 +146,25 @@ class fieldClass
      * @return void
      */
     public function updateFields($updateData, $dbData,  $tableModel)  {
-        Schema::table($tableModel->code, function (Blueprint $table) use ($dbData, $updateData) {
-            $table->renameColumn($dbData->code, $updateData ['code']);
-        });
+        if(Schema::hasColumn($tableModel->code, $dbData->code)) {
+            Schema::table($tableModel->code, function (Blueprint $table) use ($dbData, $updateData) {
+                $table->renameColumn($dbData->code, $updateData ['code']);
+            });
+        };
+    }
+
+    /**
+     * Delete field
+     *
+     * @param  array $itemModel item data from database
+     * @param object $tableModel table model
+     * @return void
+     */
+    public function deleteFields($itemModel, $tableModel)  {
+        if(Schema::hasColumn($tableModel->code, $itemModel->code)) {
+            Schema::table($tableModel->code, function (Blueprint $table) use ($itemModel) {
+                $table->dropColumn($itemModel->code);
+            });
+        };
     }
 }
