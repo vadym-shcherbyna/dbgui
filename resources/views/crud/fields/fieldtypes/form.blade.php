@@ -35,7 +35,3 @@
     </select>
 
 </div>
-
-@section('javascript')
-    @parent
-@endsection

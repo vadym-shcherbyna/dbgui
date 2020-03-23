@@ -1,11 +1,8 @@
 @extends('crud.layout')
 
-@section('css')
-@endsection
+@section('css', '')
 
-@section('javascript')
-	@parent
-@endsection
+@section('javascript', '')
 
 @section('content')
 			
