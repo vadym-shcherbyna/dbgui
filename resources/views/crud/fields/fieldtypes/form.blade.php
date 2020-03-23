@@ -23,7 +23,7 @@
 
 <div class="form-group d-none" id="linkedDataTablesLayout">
 
-    <label for="linked_data_tables">Select table <strong class="text-danger">*</strong></label>
+    <label for="linked_data_tables">Source Data Table <strong class="text-danger">*</strong></label>
 
     <select class="form-control col-md-6" id="linkedDataTables"  name="linked_data_tables">
         @if(count($field->linked_tables) === 0)
@@ -38,5 +38,4 @@
 
 @section('javascript')
     @parent
-    sss
 @endsection

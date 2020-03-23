@@ -44,7 +44,7 @@ $("body").on("click", '.item-list-filter-search', function(){
 	else {
 		$('.item-list-filter-input[data-id="' + input + '"]').focus();
 	}
-})	;
+});
 
 // Event for Enter button
 $('.item-list-filter-input').keypress(function(e) {
@@ -68,7 +68,7 @@ $("body").on("click", '.item-list-clear', function(){
 	window.location = '/crud/' + url + '/filter/' + filter  + '/value/clear';
 })	;
 
-// For  custom code
+// Extra functionality for tables and columns
 $(document).ready(function(){
 	// Handler for Field Type
 	$("body").on("change", "#fieldTypesSelect", function(){
