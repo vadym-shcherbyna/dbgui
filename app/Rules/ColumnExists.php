@@ -54,7 +54,7 @@ class ColumnExists implements Rule
             return false;
         }
 
-		return  true;
+        return  true;
     }
 
     /**

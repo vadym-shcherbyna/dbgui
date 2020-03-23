@@ -15,7 +15,7 @@ class ColumnName implements Rule
      */
     public function passes($attribute, $value)
     {
-		return (preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $value, $matches)) ? true : false;
+        return (preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $value, $matches)) ? true : false;
     }
 
     /**
