@@ -1,5 +1,7 @@
 # DBGUI
    GUI for database (Laravel 7.x)
+# Desscription
+   Manage tables and columns
 # Install
  - Install  Laravel 7.*
  
@@ -17,8 +19,4 @@
  # Code features
   - Migrations + seeding
   - Custom validation rules
-  - Custom middleware
-  - Manage tables and columns
-  - 
-  
-  
+  - Custom middleware  
