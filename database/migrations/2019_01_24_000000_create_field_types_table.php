@@ -32,6 +32,7 @@ class CreateFieldTypesTable extends Migration
         DB::table('field_types')->insert(['id' => 6, 'name' => 'Data Source (tables)', 'code' => 'tables', 'description' => 'Data Source (tables)', 'flag_sorted' => 0, 'weight' => 250]);
         DB::table('field_types')->insert(['id' => 7, 'name' => 'Weight (sorting)', 'code' => 'weight', 'description' => 'Weight (sorting)', 'flag_sorted' => 1, 'weight' => 240]);
         DB::table('field_types')->insert(['id' => 8, 'name' => 'Field Types (system)', 'code' => 'fieldtypes', 'description' => '', 'flag_system' => 1, 'weight' => 0]);
+        DB::table('field_types')->insert(['id' => 9, 'name' => 'Password (system)', 'code' => 'password', 'description' => '', 'flag_system' => 1, 'weight' => 0]);
         #DB::table('field_types')->insert(['id' => 9, 'name' => 'Data Source (enumerate)', 'code' => 'enumerate', 'flag_sorted' => 0, 'weight' => 230]);
         #DB::table('field_types')->insert(['id' => 10, 'name' => 'Data Source (collections)', 'code' => 'extented_enumerate', 'flag_sorted' => 0, 'weight' => 220]);
     }

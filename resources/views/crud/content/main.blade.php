@@ -1,9 +1,5 @@
 @extends('crud.layout')
 
-@section('css', '')
-
-@section('javascript', '')
-
 @section('content')
 			
 	<div class="row mb-3">
