@@ -21,7 +21,7 @@ class CreateTablesTable extends Migration
             $table->string('name');
             $table->string('code', 191)->unique();
             $table->string('url');
-            $table->integer('weight')->default(0)->nullable();
+            $table->integer('weight')->default(0);
             $table->string('item_name')->nullable();
             $table->string('fa')->default('table')->nullable();
             $table->boolean('flag_view')->default(1);

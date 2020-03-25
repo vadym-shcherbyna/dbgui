@@ -79,7 +79,7 @@ class fieldtypesFieldClass  extends fieldClass
      * Create field/fields in  table
      *
      * @param  array $insertData inserting data
-     * @param  object $table current table model
+     * @param  object $tableModel current table model
      * @return void
      */
     public function createFields ($insertData, $tableModel)

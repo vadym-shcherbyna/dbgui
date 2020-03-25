@@ -122,7 +122,8 @@ class fieldClass
     /**
      * Create field/fields in  table
      *
-     * @param  object $table current table model
+     * @param  array $insertData array  for inserting
+     * @param  object $tableModel current table model
      * @return void
      */
     public function createFields ($insertData, $tableModel)

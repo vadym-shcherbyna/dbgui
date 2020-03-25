@@ -18,7 +18,7 @@ class CreateSettingsTable extends Migration
             $table->string('code', 191)->unique();
             $table->string('value');
             $table->string('description');
-            $table->integer('weight')->default(0)->nullable();
+            $table->integer('weight')->default(0);
         });
 
         // Populate

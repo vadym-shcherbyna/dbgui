@@ -20,7 +20,7 @@ class CreateFieldsTable extends Migration
             $table->unsignedBigInteger('table_id');
             $table->string('name');
             $table->string('code');
-            $table->integer('weight')->default(0)->nullable();
+            $table->integer('weight')->default(0);
             $table->boolean('flag_view')->default(0);
             $table->boolean('flag_edit')->default(1);
             $table->boolean('flag_required')->default(0);

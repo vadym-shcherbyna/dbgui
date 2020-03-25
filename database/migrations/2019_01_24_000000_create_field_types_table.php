@@ -20,7 +20,7 @@ class CreateFieldTypesTable extends Migration
             $table->string('description')->nullable();
             $table->boolean('flag_sorted')->default(1);
             $table->boolean('flag_system')->default(0);
-            $table->integer('weight')->default(0)->nullable();
+            $table->integer('weight')->default(0);
         });
 
         // Populate
