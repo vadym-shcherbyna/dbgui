@@ -22,7 +22,7 @@ class varcharFieldClass  extends fieldClass
 
         return $model;
     }
-    
+
     /**
      * Create field/fields in  table
      *

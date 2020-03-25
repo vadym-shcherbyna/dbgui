@@ -25,6 +25,11 @@ class tablesFieldClass  extends fieldClass
      */
     public function mutateAddGet ($field)
     {
+        //
+        if (request()->session()->has('filters.fields.14')){
+            $field->default_value = request()->session()->get('filters.fields.14.value');
+        }
+
         return $this->mutateEditGet ($field);
     }
 

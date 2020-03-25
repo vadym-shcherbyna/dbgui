@@ -9,7 +9,7 @@
 								
 		<select data-filter="{{ $field->id }}" data-url="{{ $table->code }}" class="form-control item-list-filter-select">
 									
-			<option value="0"></option>										
+			<option value="clear"></option>
 			
 			@foreach($field->options as $option)
 			

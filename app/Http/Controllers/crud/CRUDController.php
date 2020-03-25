@@ -478,7 +478,6 @@ class CRUDController extends pageController
         }
 
         return false;
-
     }
 
     /**
