@@ -1,6 +1,6 @@
 # DBGUI
    GUI for database (Laravel 7.x)
-# Desscription
+# Description
    Manage tables and columns
 # Install
  - Install  Laravel 7.*
