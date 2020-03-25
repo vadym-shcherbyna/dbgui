@@ -12,6 +12,23 @@
   - Install intervention/image  for process images 
  
 ` composer require intervention/image`
+
+In the $providers array add the service providers for this package.
+  
+Intervention\Image\ImageServiceProvider::class
+
+Add the facade of this package to the $aliases array.
+  
+'Image' => Intervention\Image\Facades\Image::class
+
+        'imagelocal' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/imagelocal'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+        ],
+        
+**storage/app/public/imagelocal**
  
  - Copy  repository
  
