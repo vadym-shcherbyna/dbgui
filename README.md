@@ -8,6 +8,10 @@
   - Install doctrine/dbal  for managing columns 
  
 ` composer require doctrine/dbal`
+
+  - Install intervention/image  for process images 
+ 
+` composer require intervention/image`
  
  - Copy  repository
  
