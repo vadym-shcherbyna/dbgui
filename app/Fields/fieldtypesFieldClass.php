@@ -40,9 +40,10 @@ class fieldtypesFieldClass  extends fieldClass
      * Get  linked table and options for  select
      *
      * @param  array $field
+     * @param  object $itemModel
      * @return array
      */
-    public function mutateEditGet ($field)
+    public function mutateEditGet ($field, $itemModel)
     {
         // Field types
         $field->options = FieldType::select('id', 'name',  'code', 'description')->orderBy('weight', 'DESC')->get();

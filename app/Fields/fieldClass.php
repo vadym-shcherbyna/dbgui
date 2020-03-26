@@ -49,9 +49,10 @@ class fieldClass
      * Mutate field for editing  form
      *
      * @param  array $field
+     * @param  object $itemModel
      * @return array
      */
-    public function mutateEditGet ($field)
+    public function mutateEditGet ($field, $itemModel)
     {
         return $field;
     }
@@ -61,23 +62,25 @@ class fieldClass
      *
      * @param  \Illuminate\Http\Request $request
      * @param  array $field
+     * @param  array $updateArray
      * @return string
      */
-    public function mutateEditPost (Request $request, $field)
+    public function mutateEditPost (Request $request, $field, $updateArray)
     {
-        return $request->input($field->code);
+        $updateArray [$field->code] = $request->input($field->code);
+        return $updateArray;
     }
 
     /**
      * Mutate field before delete item
      *
-     * @param  array $row field settings
-     * @param  array $field field data
+     * @param  object $row item model
+     * @param  object $field field model
      * @return string
      */
-    public function mutateDelete ($row, $field)
+    public function mutateDelete ($item, $field)
     {
-        return $row->{$field->code};
+        return $item->{$field->code};
     }
 
     /**

@@ -358,7 +358,7 @@ class CRUDController extends pageController
             if ($this->checkRow($id)) {
                 // Mutate fields
                 foreach ($this->Data['table']->fieldsEdit as $key => $field) {
-                    $this->Data['table']->fieldsEdit[$key] = $this->{$this->fieldClass($field)}->mutateEditGet($field);
+                    $this->Data['table']->fieldsEdit[$key] = $this->{$this->fieldClass($field)}->mutateEditGet($field, $this->Data['item']);
                 }
 
                 return view('crud.pages.edit', $this->Data);
@@ -394,7 +394,7 @@ class CRUDController extends pageController
                 // Mutate POST data
                 $updateArray = [];
                 foreach ($this->Data['table']->fieldsEdit as $key => $field) {
-                    $updateArray [$field->code] = $this->{$this->fieldClass($field)}->mutateEditPost($request, $field);
+                    $updateArray = $this->{$this->fieldClass($field)}->mutateEditPost($request, $field, $updateArray);
                 }
 
                 // Get  old Row  data

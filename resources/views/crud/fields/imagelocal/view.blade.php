@@ -1,0 +1,1 @@
+<img src="{{ $data }}" class="img-thumbnail">

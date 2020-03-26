@@ -65,9 +65,10 @@ class tablesFieldClass  extends fieldClass
      * Get  linked table and options for  select
      *
      * @param  array $field
+     * @param  object $itemModel
      * @return array
      */
-    public function mutateEditGet ($field)
+    public function mutateEditGet ($field, $itemModel)
     {
         // Get  linked table
         $linkedTable = Table::find($field->linked_data_id);

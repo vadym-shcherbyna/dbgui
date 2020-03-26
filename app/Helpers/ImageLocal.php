@@ -89,7 +89,7 @@ class ImageLocal
      * @param string $height
      * @return string
      */
-    public static function GetImage ($key, $width = false, $height = false)
+    public static function getImage ($key, $width = null, $height = null)
     {
         // Prepare key
         $key = trim ($key);
@@ -116,18 +116,20 @@ class ImageLocal
             return false;
         }
 
-        // Resize by width
-        if (!$width) {
-            $image->resize(null, $height, function ($constraint) {
-                $constraint->aspectRatio();
-            });
-        }
-
-        // Resize by height
-        if (!$height) {
-            $image->resize($width, null, function ($constraint) {
-                $constraint->aspectRatio();
-            });
+        // Resize image
+        if ($width || $height) {
+            if ($width && $height) {
+                // Crop image
+                $image->fit($width, $height, function ($img) {
+                    $img->upsize();
+                });
+            } else {
+                //  Resize image with ratio
+                $image->resize($width, $height, function ($img) {
+                    $img->aspectRatio();
+                    $img->upsize();
+                });
+            }
         }
 
         $image->save(config('filesystems.disks.'.self::DISC_NAME.'.root').'/'.$imagePath);
