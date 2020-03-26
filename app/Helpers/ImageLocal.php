@@ -25,7 +25,18 @@ class ImageLocal
     }
 
     /**
-     * Create  random file name fir image
+     * Get patch to image by key
+     *
+     * @param string $key
+     * @return string
+     */
+    public static function getFoldersByKey ($key)
+    {
+        return $key [0].'/'.$key [1].'/'.$key [2].'/';
+    }
+
+    /**
+     * Create  folders according  to filename (separate patches)
      *
      * @param string $objectName filename of image
      * @return void
@@ -34,192 +45,118 @@ class ImageLocal
     {
         Storage::disk(self::DISC_NAME)->makeDirectory($objectName[0]);
         Storage::disk(self::DISC_NAME)->makeDirectory($objectName[0].'/'.$objectName[1]);
-        Storage::disk(self::DISC_NAME)->makeDirectory($objectName[0].'/'.$name[1].'/'.$objectName[2]);
+        Storage::disk(self::DISC_NAME)->makeDirectory($objectName[0].'/'.$objectName[1].'/'.$objectName[2]);
     }
 
     /**
-     * Create  random file name fir image
+     * Main function uploading file via _FILES
      *
      * @param object $file
-     * @return void
+     * @return string
      */
     public static function uploadImage ($file)
     {
         // create path
-        $imageName = ImageLocal::createName();
-
-        ImageLocal::createPath ($imageName);
-
-        $imagePath = config('filesystems.disks.'.self::DISC_NAME.'.root').'/'.$imageName [0].'/'.$imageName [1].'/'.$imageName [2].'/'.$imageName.'.jpg';
+        $key = ImageLocal::createName();
+        ImageLocal::createPath ($key);
+        $keyFolders = ImageLocal::getFoldersByKey($key);
+        $imagePath = config('filesystems.disks.'.self::DISC_NAME.'.root').'/'.$keyFolders.$key.'.jpg';
 
         // upload image
-
         $image = Image::make($file->path());
 
+        // Checking  width
         $width = $image->width();
-
         if ($width > 1024) {
-
             $image->resize(1024, null, function ($constraint) {
-
                 $constraint->aspectRatio();
-
             });
-
         }
 
+        // Convert  to JPEG
         $image->encode('jpg', 90);
 
         $image->save($imagePath);
 
-        return $name;
-
+        return $key;
     }
 
-    // Upload global image
-
-    public static function UploadExternalImage ($path, $disk) {
-
-        $path = trim ($path);
-
-        if (!empty($path)) {
-
-            // Download file
-
-            if ($image = Image::make($path)) {
-
-                $name = imagesLocal::CreateName();
-
-                imagesLocal::CreatePath ($name, $disk);
-
-                $imagePath = config('filesystems.disks.'.$disk.'.root').'/'.$name [0].'/'.$name [1].'/'.$name [2].'/'.$name.'.jpg';
-
-                //
-
-                $width = $image->width();
-
-                if ($width > 1024) {
-
-                    $image->resize(1024, null, function ($constraint) {
-
-                        $constraint->aspectRatio();
-
-                    });
-
-                }
-
-                $image->encode('jpg', 90);
-
-                $image->save($imagePath);
-
-                return $name;
-
-            }
-
-        }
-
-        return false;
-
-    }
-
-    //
-
-    public static function GetImage ($key, $disk, $width = FALSE, $height = FALSE) {
-
+    /**
+     * Get patch  for image by key which saveing in database (md5)
+     *
+     * @param string $key 32 long hash string
+     * @param string $width
+     * @param string $height
+     * @return string
+     */
+    public static function GetImage ($key, $width = false, $height = false)
+    {
         // Prepare key
-
         $key = trim ($key);
-
         if (empty($key)) return false;
 
         // Setting
-
-        $width  ? $widthname = '.'.$width : $widthname = '';
-        $height ? $heightname = '.'.$height : $heightname = '';
+        $width  ? $widthName = '.'.$width : $widthName = '';
+        $height ? $heightName = '.'.$height : $heightName = '';
 
         // Patches
-
-        $ImagePath = $key [0].'/'.$key [1].'/'.$key [2].'/'.$key.$widthname.$heightname.'.jpg';
-
-        $ImageSourcePath = $key [0].'/'.$key [1].'/'.$key [2].'/'.$key.'.jpg';
+        $keyFolders = ImageLocal::getFoldersByKey($key);
+        $imagePath = $keyFolders.$key.$widthName.$heightName.'.jpg';
+        $imageSourcePath = $keyFolders.$key.'.jpg';
 
         // Check exists
-
-        if (Storage::disk($disk)->exists($ImagePath))  {
-
-            return env('APP_URL').'/storage/'.$disk.'/'.$ImagePath;
-
+        if (Storage::disk(self::DISC_NAME)->exists($imagePath))  {
+            return env('APP_URL').'/storage/'.self::DISC_NAME.'/'.$imagePath;
         }
 
         // Create image
-
-        if (Storage::disk($disk)->exists($ImageSourcePath))  {
-
-            $image = Image::make(config('filesystems.disks.'.$disk.'.root').'/'.$ImageSourcePath);
-
-        }
-        else {
-
+        if (Storage::disk(self::DISC_NAME)->exists($imageSourcePath))  {
+            $image = Image::make(config('filesystems.disks.'.self::DISC_NAME.'.root').'/'.$imageSourcePath);
+        } else {
             return false;
-
         }
 
-        // Resize
-
+        // Resize by width
         if (!$width) {
-
             $image->resize(null, $height, function ($constraint) {
-
                 $constraint->aspectRatio();
-
             });
-
         }
 
+        // Resize by height
         if (!$height) {
-
             $image->resize($width, null, function ($constraint) {
-
                 $constraint->aspectRatio();
-
             });
-
         }
 
-        $image->save(config('filesystems.disks.'.$disk.'.root').'/'.$ImagePath);
+        $image->save(config('filesystems.disks.'.self::DISC_NAME.'.root').'/'.$imagePath);
 
-        return env('APP_URL').'/storage/'.$disk.'/'.$ImagePath;
-
+        return env('APP_URL').'/storage/'.self::DISC_NAME.'/'.$imagePath;
     }
 
-
-    // DeleteImage
-
-    public static function DeleteImage ($key, $disk) {
-
+    /**
+     * Delete image by key
+     *
+     * @param string $key 32 long hash string
+     * @return void
+     */
+    public static function DeleteImage ($key)
+    {
         if (!empty($key)) {
+            $keyFolders = ImageLocal::getFoldersByKey($key);
+            $imagePath =  $keyFolders.$key;
 
-            $imagePath = $key [0].'/'.$key [1].'/'.$key [2].'/'.$key;
-
-            $images = Storage::disk($disk)->allFiles($key [0].'/'.$key [1].'/'.$key [2]);
+            $images = Storage::disk(self::DISC_NAME)->allFiles($keyFolders);
 
             foreach ($images as $key => $value) {
-
                 $pos = strpos($value, $imagePath);
-
                 if ($pos === false) {
-
                 }
                 else {
-
-                    Storage::disk($disk)->delete($value);
-
+                    Storage::disk(self::DISC_NAME)->delete($value);
                 }
-
             }
-
         }
-
     }
-
 }
