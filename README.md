@@ -1,5 +1,5 @@
 # DBGUI
-   Graphical user interface for database (Laravel 7.x)
+   Graphical user interface for database (Laravel 7.x). Creating, editing, deleting  tables and columns. Implementing custom types of data.
 # Description
    Manage tables and columns
 # Installation
