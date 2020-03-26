@@ -8,6 +8,8 @@ use DB;
 use Validator;
 use Illuminate\Http\Request;
 use App\Helpers\ImageLocal;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 class imagelocalFieldClass  extends fieldClass
 {

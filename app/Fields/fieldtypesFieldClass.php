@@ -8,6 +8,8 @@ use App\FieldType;
 use DB;
 use Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 class fieldtypesFieldClass  extends fieldClass
 {
@@ -33,7 +35,7 @@ class fieldtypesFieldClass  extends fieldClass
      */
     public function mutateAddGet ($field)
     {
-        return $this->mutateEditGet ($field);
+        return $this->mutateEditGet ($field, null);
     }
 
     /**

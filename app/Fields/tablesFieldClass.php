@@ -7,6 +7,8 @@ use App\Table;
 use DB;
 use Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 class tablesFieldClass  extends fieldClass
 {
@@ -30,7 +32,7 @@ class tablesFieldClass  extends fieldClass
             $field->default_value = request()->session()->get('filters.fields.14.value');
         }
 
-        return $this->mutateEditGet ($field);
+        return $this->mutateEditGet ($field, null);
     }
 
     /**

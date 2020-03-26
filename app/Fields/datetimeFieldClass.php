@@ -3,6 +3,8 @@
 namespace App\Fields;
 
 use App\Fields\fieldClass;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 class datetimeFieldClass  extends fieldClass
 {
