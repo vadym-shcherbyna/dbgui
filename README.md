@@ -9,7 +9,7 @@ Graphical user interface for database: creating, editing, deleting  tables and c
  
 Run ` composer require doctrine/dbal`
 
-**3. Install intervention/image  for process images** 
+**3. Install intervention/image for processing local images** 
  
 Run ` composer require intervention/image`
 
