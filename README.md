@@ -1,5 +1,5 @@
 # DBGUI
-   GUI for database (Laravel 7.x)
+   Graphical user interface for database (Laravel 7.x)
 # Description
    Manage tables and columns
 # Installation
