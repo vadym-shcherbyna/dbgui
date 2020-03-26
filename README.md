@@ -3,13 +3,13 @@
 # Description
    Manage tables and columns
 # Installation
-**Install  Laravel 7.***
+**1. Install  Laravel 7.***
  
-**Install doctrine/dbal  for managing columns** 
+**2. Install doctrine/dbal  for managing columns** 
  
 Run ` composer require doctrine/dbal`
 
-**Install intervention/image  for process images** 
+**3. Install intervention/image  for process images** 
  
 Run ` composer require intervention/image`
 
@@ -30,13 +30,13 @@ Add Setting in config/filesystem.php
             'visibility' => 'public',
         ],
  
- **Copy  repository**
+ **4. Copy  repository**
  
- **Update app/Http/Kernel.php, add new middleware to $routeMiddleware array:**
+ **5. Update app/Http/Kernel.php, add new middleware to $routeMiddleware array:**
    
 Add `'crud' => \App\Http\Middleware\CheckAdmin::class`
     
-**Run migrations**
+**6. Run migrations**
 
  # Code features
   - Migrations + seeding
