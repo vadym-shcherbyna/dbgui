@@ -7,11 +7,15 @@ Graphical user interface for database: creating, editing, deleting  tables and c
  
  **2. Copy  repository**
  
-**3. Install doctrine/dbal  for managing columns** 
+ **6. Install migrations**
+ 
+ Run `php artisan migrate`
+ 
+**4. Install doctrine/dbal  for managing columns** 
  
 Run ` composer require doctrine/dbal`
 
-**4. Install intervention/image for processing local images** 
+**5. Install intervention/image for processing local images** 
  
 Run ` composer require intervention/image`
 
@@ -32,11 +36,9 @@ Add Setting in config/filesystem.php
             'visibility' => 'public',
         ],
  
- **5. Update app/Http/Kernel.php, add new middleware to $routeMiddleware array:**
+ **6. Update app/Http/Kernel.php, add new middleware to $routeMiddleware array:**
    
-Add `'crud' => \App\Http\Middleware\CheckAdmin::class`
-    
-**6. Run migrations**
+Add `'crud' => \App\Http\Middleware\CheckAdmin::class`    
 
  # Code features
   - Migrations + seeding
