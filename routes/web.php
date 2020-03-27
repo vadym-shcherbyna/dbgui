@@ -10,12 +10,17 @@ Route::get('auth/login', 'auth\AuthController@loginForm')->name('login');
 Route::post('auth/login', 'auth\AuthController@loginPost');
 Route::get('auth/logout', 'auth\AuthController@logout')->name('logout');
 
-// Redefinition controllers for  tables' section
+// Overriding controller for  settings
+Route::get('crud/settings', 'crud\settingsController@form')->middleware('crud');
+Route::get('crud/settings/list', 'crud\settingsController@form')->middleware('crud');
+Route::post('crud/settings/list', 'crud\settingsController@save')->middleware('crud');
+
+// Overriding controllers for  tables' section
 Route::post('crud/tables/add', 'crud\TableController@tableAddPost')->middleware('crud');
 Route::post('crud/tables/edit/{id}', 'crud\TableController@tableEditPost')->middleware('crud');
 Route::get('crud/tables/delete/{id}', 'crud\TableController@tableDelete')->middleware('crud');
 
-// Redefinition controllers for  fields' section
+// Overriding controllers for  fields' section
 Route::post('crud/fields/add', 'crud\FieldController@fieldAddPost')->middleware('crud');
 Route::post('crud/fields/edit/{id}', 'crud\FieldController@fieldEditPost')->middleware('crud');
 Route::get('crud/fields/delete/{id}', 'crud\FieldController@fieldDelete')->middleware('crud');
