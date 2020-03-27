@@ -5,11 +5,13 @@ Graphical user interface for database: creating, editing, deleting  tables and c
 # Installation
 **1. Install  Laravel 7.***
  
-**2. Install doctrine/dbal  for managing columns** 
+ **2. Copy  repository**
+ 
+**3. Install doctrine/dbal  for managing columns** 
  
 Run ` composer require doctrine/dbal`
 
-**3. Install intervention/image for processing local images** 
+**4. Install intervention/image for processing local images** 
  
 Run ` composer require intervention/image`
 
@@ -29,8 +31,6 @@ Add Setting in config/filesystem.php
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
- 
- **4. Copy  repository**
  
  **5. Update app/Http/Kernel.php, add new middleware to $routeMiddleware array:**
    

@@ -19,6 +19,8 @@
 
     </select>
 
+    <small id="fieldTypesSelectHelp" class="form-text text-muted"></small>
+
 </div>
 
 <div class="form-group d-none" id="linkedDataTablesLayout">
@@ -35,3 +37,34 @@
     </select>
 
 </div>
+
+@section('javascript')
+    <script>
+        $(document).ready(function(){
+            var currentHelp = $('#fieldTypesSelect').find(':selected').data('description');
+
+            $('#fieldTypesSelectHelp').html(currentHelp);
+
+            // Handler for Field Type
+            $("body").on("change", "#fieldTypesSelect", function(){
+                var currentOption = $(this).find(':selected').data('code');
+                var currentHelp = $(this).find(':selected').data('description');
+
+                $('#fieldTypesSelectHelp').html(currentHelp);
+
+                if (currentOption == 'tables') {
+                    $('#linkedDataId').val($('#linkedDataTables').val());
+                    $('#linkedDataTablesLayout').removeClass('d-none');
+                } else {
+                    $('#linkedDataId').val('0');
+                    $('#linkedDataTablesLayout').addClass('d-none');
+                }
+            })	;
+
+            // Handler for linkedDataTables changing
+            $("body").on("change", "#linkedDataTables", function(){
+                $('#linkedDataId').val($('#linkedDataTables').val());
+            })	;
+        });
+    </script>
+@endsection

@@ -68,23 +68,3 @@ $("body").on("click", '.item-list-clear', function(){
 	window.location = '/crud/' + url + '/filter/' + filter  + '/value/clear';
 })	;
 
-// Extra functionality for tables and columns
-$(document).ready(function(){
-	// Handler for Field Type
-	$("body").on("change", "#fieldTypesSelect", function(){
-		var currentOption = $(this).find(':selected').data('code');
-
-		if (currentOption == 'tables') {
-			$('#linkedDataId').val($('#linkedDataTables').val());
-			$('#linkedDataTablesLayout').removeClass('d-none');
-		} else {
-			$('#linkedDataId').val('0');
-			$('#linkedDataTablesLayout').addClass('d-none');
-		}
-	})	;
-
-	// Handler for linkedDataTables changing
-	$("body").on("change", "#linkedDataTables", function(){
-		$('#linkedDataId').val($('#linkedDataTables').val());
-	})	;
-});
