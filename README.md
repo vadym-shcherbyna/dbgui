@@ -7,7 +7,7 @@ Graphical user interface for database: creating, editing, deleting  tables and c
  
  **2. Copy  repository**
  
- **6. Install migrations**
+ **3. Install migrations**
  
  Run `php artisan migrate`
  
