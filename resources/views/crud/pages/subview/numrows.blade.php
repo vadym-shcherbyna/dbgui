@@ -1,10 +1,5 @@
-	
-	@if($items->total()  > 10)
-								
-		<small>{{ $items->count() }} items of {{ $items->total() }}</small>				 		
-		
-	@else
-
-		<small>Total items: {{ $items->total() }}</small>
-		
-	@endif
+@if($items->total()  > 10)
+	<small>{{ $items->count() }} @lang('crud.items.list.items_of') {{ $items->total() }}</small>
+@else
+	<small>@lang('crud.items.list.total_items'): {{ $items->total() }}</small>
+@endif

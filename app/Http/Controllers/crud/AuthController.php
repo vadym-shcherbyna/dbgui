@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\auth;
+namespace App\Http\Controllers\crud;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\crud\PageController;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 
-class AuthController extends Controller
+class AuthController extends PageController
 {
     /**
      * Controller for login page
@@ -18,9 +18,11 @@ class AuthController extends Controller
     public function loginForm()
     {
         if (Auth::check()) {
-            return redirect(route('crud'));
+            //
+            return redirect(route('dashboard'));
         } else {
-            return view('auth.login');
+            //
+            return $this->view('auth.login');
         }
     }
 
@@ -42,7 +44,7 @@ class AuthController extends Controller
 
         // Return login form with  errors
         if ($validator->fails()) {
-            return redirect(route('login'))->withErrors($validator)->withInput();
+            return redirect(route('auth.login'))->withErrors($validator)->withInput();
         }
 
         // Check "remember" flag
@@ -66,9 +68,9 @@ class AuthController extends Controller
 
             // Check auth
             if (Auth::attempt($credentials, $remember)) {
-                return redirect(route('crud'));
+                return redirect(route('dashboard'));
             } else {
-                return redirect(route('login'))->withInput();
+                return redirect(route('auth.login'))->withInput();
             }
         } else {
             // Create new  account with admin rules
@@ -80,7 +82,7 @@ class AuthController extends Controller
 
             //  Auth new  account and  redirect  to  crud area
             Auth::login($User, true);
-            return redirect(route('crud'));
+            return redirect(route('dashboard'));
         }
     }
 
@@ -92,6 +94,6 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect(route('login'));
+        return redirect(route('auth.login'));
     }
 }

@@ -40,9 +40,11 @@ Add Setting in `config/filesystem.php`
  
  **6. Add custom middleware**
    
-Update `app/Http/Kernel.php`, add new middleware to `$routeMiddleware` array:   
+Update `app/Http/Kernel.php`, add new middlewares to `$routeMiddleware` array:   
    
-`'crud' => \App\Http\Middleware\CheckAdmin::class`    
+`'crud' => \App\Http\Middleware\CheckAdmin::class,`
+
+`'lang' => \App\Http\Middleware\SetLang::class,`		    
 
  # Code features
   - Migrations + seeding

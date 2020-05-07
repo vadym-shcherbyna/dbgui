@@ -1,6 +1,3 @@
-
-	<nav class="navbar navbar-light bg-light mb-3">
-		
-		Lorem Ipsum
-		
-	</nav>			
+<nav class="navbar navbar-light bg-light mb-3">
+	@lang('crud.copyright')
+</nav>

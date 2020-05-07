@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\crud;
 
-use App\Http\Controllers\pageController;
+use App\Http\Controllers\crud\PageController;
 use App\Table;
 use DB;
 use Validator;
 use Illuminate\Http\Request;
 use App\Helpers\Settings;
 
-class CRUDController extends pageController
+class CRUDController extends PageController
 {
     /**
      * Values  for paginations  -  rows  per  page
@@ -72,7 +72,7 @@ class CRUDController extends pageController
      */
     public function index()
     {
-        return view('crud.pages.index', $this->Data);
+        return $this->view('crud.pages.index', $this->Data);
     }
 
     /**
@@ -108,9 +108,6 @@ class CRUDController extends pageController
             if (request()->session()->has('numrows.'.$this->Data['table']->code)) {
                 $this->currentPagination =  request()->session()->get('numrows.'.$this->Data['table']->code);
             }
-
-            // Set title
-            $this->Data ['title'] = $this->Data['table']->name;
 
             // Set fields
             $selectedArray = $this->Data['table']->fieldsView->pluck('code')->toArray();
@@ -176,7 +173,7 @@ class CRUDController extends pageController
                 $this->Data['direction'] = 'asc';
             }
 
-            return view('crud.pages.list', $this->Data);
+            return $this->view('crud.pages.list', $this->Data);
         }
 
     }
@@ -366,7 +363,7 @@ class CRUDController extends pageController
                     $this->Data['table']->fieldsEdit[$key] = $this->{$this->fieldClass($field)}->mutateEditGet($field, $this->Data['item']);
                 }
 
-                return view('crud.pages.edit', $this->Data);
+                return $this->view('crud.pages.edit', $this->Data);
             }
         }
     }

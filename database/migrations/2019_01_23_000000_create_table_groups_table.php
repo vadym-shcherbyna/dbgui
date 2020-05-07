@@ -16,12 +16,14 @@ class CreateTableGroupsTable extends Migration
         Schema::create('table_groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('code');
             $table->integer('weight')->default(0);
+            $table->boolean('flag_system')->default(0);
         });
 
         // Populate
-        DB::table('table_groups')->insert(['id' => 1, 'name' => 'System', 'weight' => 100]);
-        DB::table('table_groups')->insert(['id' => 2, 'name' => 'Accounts', 'weight' => 90]);
+        DB::table('table_groups')->insert(['id' => 1, 'name' => 'System', 'code' => 'system', 'weight' => 100, 'flag_system' => 1]);
+        DB::table('table_groups')->insert(['id' => 2, 'name' => 'Accounts', 'code' => 'accounts', 'weight' => 90, 'flag_system' => 1]);
     }
 
     /**

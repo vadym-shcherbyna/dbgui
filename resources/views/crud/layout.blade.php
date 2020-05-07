@@ -4,13 +4,13 @@
 
 	<head>
 				
-		<meta name="csrf-token" content="{{ csrf_token() }}">
+		<meta name="csrf-token" content="{{csrf_token()}}">
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">		
 			
-		@isset($title)<title>{{ $title }}</title>@endisset
-		@isset($description)<meta name="description" content="{{ $description }}" />@endisset
-		@isset($keywords)<meta name="keywords" content="{{ $keywords }}" />	@endisset		
+		@isset($title)<title>{{$title}}</title>@endisset
+		@isset($description)<meta name="description" content="{{$description}}" />@endisset
+		@isset($keywords)<meta name="keywords" content="{{$keywords}}" />	@endisset
 		
 		<link rel="shortcut icon" href="{{ env('APP_URL') }}/crud/favicon.ico" />
 		
