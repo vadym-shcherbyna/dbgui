@@ -11,9 +11,9 @@ Route::post('auth/login', 'auth\AuthController@loginPost');
 Route::get('auth/logout', 'auth\AuthController@logout')->name('logout');
 
 // Overriding controller for  settings
-Route::get('crud/settings', 'crud\settingsController@form')->middleware('crud');
-Route::get('crud/settings/list', 'crud\settingsController@form')->middleware('crud');
-Route::post('crud/settings/list', 'crud\settingsController@save')->middleware('crud');
+Route::get('crud/settings', 'crud\SettingController@form')->middleware('crud');
+Route::get('crud/settings/list', 'crud\SettingController@form')->middleware('crud');
+Route::post('crud/settings', 'crud\SettingController@save')->middleware('crud');
 
 // Overriding controllers for  tables' section
 Route::post('crud/tables/add', 'crud\TableController@tableAddPost')->middleware('crud');

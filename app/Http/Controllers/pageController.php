@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\TableGroup;
 use App\FieldType;
+use App\Helpers\Settings;
 
 class pageController extends Controller
 {

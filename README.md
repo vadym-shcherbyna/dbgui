@@ -19,6 +19,8 @@ Run ` composer require doctrine/dbal`
  
 Run ` composer require intervention/image`
 
+After you have installed Intervention Image, open your Laravel config file `config/app.php` and add the following lines.
+
 In the $providers array add the service providers for this package.
   
 `Intervention\Image\ImageServiceProvider::class`
@@ -27,7 +29,7 @@ Add the facade of this package to the $aliases array.
   
 `'Image' => Intervention\Image\Facades\Image::class`
 
-Add Setting in config/filesystem.php 
+Add Setting in `config/filesystem.php` 
  
         'imagelocal' => [
             'driver' => 'local',
@@ -36,9 +38,11 @@ Add Setting in config/filesystem.php
             'visibility' => 'public',
         ],
  
- **6. Update app/Http/Kernel.php, add new middleware to $routeMiddleware array:**
+ **6. Add custom middleware**
    
-Add `'crud' => \App\Http\Middleware\CheckAdmin::class`    
+Update `app/Http/Kernel.php`, add new middleware to `$routeMiddleware` array:   
+   
+`'crud' => \App\Http\Middleware\CheckAdmin::class`    
 
  # Code features
   - Migrations + seeding

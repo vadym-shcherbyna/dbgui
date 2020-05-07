@@ -34,7 +34,7 @@ class CreateTablesTable extends Migration
         DB::table('tables')->insert(['id' => 3, 'table_group_id' => 1, 'name' => 'Field types',  'code' => 'field_types', 'url' => 'field-types', 'weight' => 80, 'fa' => 'table', 'item_name' => 'type', 'flag_system' => 1, 'flag_view' => 0]);
         DB::table('tables')->insert(['id' => 4, 'table_group_id' => 1, 'name' => 'Table groups',  'code' => 'table_groups', 'url' => 'table-groups', 'weight' => 70, 'fa' => 'list-ul', 'item_name' => 'group', 'flag_system' => 1]);
         DB::table('tables')->insert(['id' => 5, 'table_group_id' => 1, 'name' => 'Settings', 'code' => 'settings', 'url' => 'settings', 'weight' => 60, 'fa' => 'cogs', 'item_name' => 'Setting', 'flag_system' => 1]);
-        DB::table('tables')->insert(['id' => 6, 'table_group_id' => 2, 'name' => 'Users', 'code' => 'users', 'url' => 'users', 'weight' => 100, 'fa' => 'users', 'item_name' => 'user']);
+        DB::table('tables')->insert(['id' => 6, 'table_group_id' => 2, 'name' => 'Users', 'code' => 'users', 'url' => 'users', 'weight' => 100, 'fa' => 'users', 'item_name' => 'user',  'flag_system' => 1]);
         DB::table('tables')->insert(['id' => 7, 'table_group_id' => 2, 'name' => 'User groups', 'code' => 'user_groups', 'url' => 'user-groups', 'weight' => 90, 'fa' => 'user', 'item_name' => 'group', 'flag_system' => 1, 'flag_view' => 0]);
 
     }

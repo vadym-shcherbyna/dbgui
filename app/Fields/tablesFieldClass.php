@@ -9,6 +9,7 @@ use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use App\Helpers\Settings;
 
 class tablesFieldClass  extends fieldClass
 {
@@ -78,7 +79,11 @@ class tablesFieldClass  extends fieldClass
         // get options for select
         if ($linkedTable) {
             if ($linkedTable->code == 'tables') {
-                $field->options = Table::select('id', 'name')->where('flag_system', '<>', 1)->orderBy('weight', 'DESC')->get();
+                if (Settings::get('dev_mode_tables')) {
+                    $field->options = Table::select('id', 'name')->orderBy('weight', 'DESC')->get();
+                } else {
+                    $field->options = Table::select('id', 'name')->where('flag_system', '<>', 1)->orderBy('weight', 'DESC')->get();
+                }
             } else {
                 $field->options = DB::table($linkedTable->code)->select('id', 'name')->orderBy('id', 'ASC')->get();
             }

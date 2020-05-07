@@ -7,6 +7,7 @@ use App\Table;
 use DB;
 use Validator;
 use Illuminate\Http\Request;
+use App\Helpers\Settings;
 
 class CRUDController extends pageController
 {
@@ -86,7 +87,11 @@ class CRUDController extends pageController
         $this->Data['item'] = null;
 
         // Check table code
-        $this->Data['table'] = Table::with('fieldsView')->with('filters')->where('url', $tableCode)->first();
+        if (Settings::get('dev_mode_tables')) {
+            $this->Data['table'] = Table::with('fieldsView')->with('filters')->where('url', $tableCode)->first();
+        }  else {
+            $this->Data['table'] = Table::with('fieldsView')->with('filters')->where('url', $tableCode)->where('flag_view', 1)->first();
+        }
 
         if ($this->Data['table']) {
             // Add page number  to  session
@@ -469,7 +474,11 @@ class CRUDController extends pageController
     protected function setTable($tableCode, $relations = 'fields')
     {
         //  Get  table   by code
-        $tableModel = Table::with($relations)->where('url', $tableCode)->first();
+        if (Settings::get('dev_mode_tables')) {
+            $tableModel = Table::with($relations)->where('url', $tableCode)->first();
+        } else {
+            $tableModel = Table::with($relations)->where('url', $tableCode)->where('flag_view', 1)->first();
+        }
 
         if ($tableModel) {
             $this->Data['table'] = $tableModel;

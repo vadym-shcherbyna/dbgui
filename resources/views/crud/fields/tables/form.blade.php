@@ -4,9 +4,15 @@
 
     <select class="form-control col-md-6" id="{{ $field->code }}_input"  name="{{ $field->code }}">
 
+        @if(count($field->options) === 0)
+            <option value="0">No Data</option>
+        @endif
+
         @if($field->flag_required)
         @else
-            <option value="0"></option>
+            @if(count($field->options) > 0)
+                <option value="0"></option>
+            @endif
         @endif
 
         @foreach($field->options as $option)
