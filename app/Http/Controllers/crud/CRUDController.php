@@ -209,7 +209,7 @@ class CRUDController extends PageController
         // Clear  pagination if  apply  new filter
         $this->forgetPagination();
 
-        return $this->itemsList($tableCode);
+        return redirect (route('items.list', $tableCode));
     }
 
     /**
@@ -233,7 +233,7 @@ class CRUDController extends PageController
             request()->session()->put('sorting.'.$this->Data['table']->code, ['field' =>  $field, 'direction' => $direction]);
         }
 
-        return $this->itemsList($tableCode);
+        return redirect (route('items.list', $tableCode));
     }
 
     /**

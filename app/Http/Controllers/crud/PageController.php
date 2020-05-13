@@ -142,9 +142,11 @@ class PageController extends Controller
             ];
 
             //
-            $this->Data ['breadcrumbs'] [] = [
-                'name' => $this->Data ['title'],
-            ];
+            if (isset($this->Data ['title'])) {
+                $this->Data ['breadcrumbs'] [] = [
+                    'name' => $this->Data ['title'],
+                ];
+            }
         }
     }
 
