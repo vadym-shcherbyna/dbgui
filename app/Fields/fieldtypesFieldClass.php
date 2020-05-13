@@ -3,13 +3,17 @@
 namespace App\Fields;
 
 use App\Fields\fieldClass;
-use App\Table;
-use App\FieldType;
+
 use DB;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+
+use App\Table;
+use App\FieldType;
+
+use App\Helpers\Settings;
 
 class fieldtypesFieldClass  extends fieldClass
 {
@@ -48,7 +52,12 @@ class fieldtypesFieldClass  extends fieldClass
     public function mutateEditGet ($field, $itemModel)
     {
         // Field types
-        $field->options = FieldType::select('id', 'name',  'code', 'description')->orderBy('weight', 'DESC')->get();
+        if (Settings::get('dev_mode_fields')) {
+            $field->options = FieldType::select('id', 'name',  'code', 'description')->orderBy('weight', 'DESC')->get();
+        } else {
+            $field->options = FieldType::select('id', 'name',  'code', 'description')->where('flag_system', 0)->orderBy('weight', 'DESC')->get();
+        }
+
 
         // Linked  tables
         $field->linked_tables = Table::query()
@@ -106,8 +115,10 @@ class fieldtypesFieldClass  extends fieldClass
      * @param object $tableModel table model
      * @return void
      */
-    public function deleteFields($itemModel, $tableModel)
+    public function deleteFields($tableModel)
     {
+        $itemModel = $this->Data['item'];
+
         if(Schema::hasColumn($tableModel->code, self::LINKED_DATA_FIELD_NAME)) {
             Schema::table($tableModel->code, function (Blueprint $table) use ($itemModel) {
                 $table->dropColumn($itemModel->code);

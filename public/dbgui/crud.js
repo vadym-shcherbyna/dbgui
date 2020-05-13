@@ -10,6 +10,20 @@ $(function () {
 	$('[data-toggle="tooltip"]').tooltip()
 });
 
+// menu collapse
+$('.list-group-collapse').on('shown.bs.collapse', function () {
+	var chevronId = $(this).data('chevron');
+	$('#chevron' + chevronId).removeClass('fa-chevron-right');
+	$('#chevron' + chevronId).addClass('fa-chevron-down');
+})
+
+$('.list-group-collapse').on('hidden.bs.collapse', function () {
+	var chevronId = $(this).data('chevron');
+	$('#chevron' + chevronId).removeClass('fa-chevron-down');
+	$('#chevron' + chevronId).addClass('fa-chevron-right');
+})
+
+
 // Event for pagination
 $("body").on("change", '.item-list-numrows', function(){
 	// <select class="form-control item-list-numrows" data-url="{{ $table->code }}">
@@ -67,4 +81,3 @@ $("body").on("click", '.item-list-clear', function(){
 
 	window.location = '/crud/' + url + '/filter/' + filter  + '/value/clear';
 })	;
-

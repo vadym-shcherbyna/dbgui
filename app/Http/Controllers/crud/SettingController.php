@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\crud;
 
 use App\Http\Controllers\crud\CRUDController;
+
 use Illuminate\Http\Request;
+use Validator;
+use DB;
+
 use App\Setting;
 use App\Table;
 
@@ -36,7 +40,7 @@ class SettingController extends CRUDController
         //
         $this->init();
 
-        return view('crud.pages.custom.setting', $this->Data);
+        return $this->view('crud.pages.custom.setting', $this->Data);
     }
 
     /**
@@ -53,7 +57,8 @@ class SettingController extends CRUDController
         //
         foreach ($request->all() as $key => $field) {
             if (isset($this->Data ['settings'] [$key])) {
-                $setting = Setting::where('code',  $key)->first();
+                //
+                $settingModel = Setting::where('code',  $key)->first();
 
                 switch ($this->Data ['settings'] [$key]->type) {
                     case 'flag':
@@ -70,11 +75,29 @@ class SettingController extends CRUDController
                         break;
                 }
 
-                $setting->value = $value;
-                $setting->save();
+                // Set default value if input is incorrect
+                $validator = Validator::make([$key => $field], [$key => $this->Data ['settings'] [$key]->validation]);
+                if ($validator->fails()) {
+                    $value = $settingModel->default_value;
+                }
+
+                $settingModel->value = $value;
+                $settingModel->save();
             }
         }
 
-        return redirect('/crud/settings/list');
+        return redirect(route('settings.list'));
+    }
+
+    /**
+     * Set default values
+     *
+     * @return Response
+     */
+    public function default()
+    {
+        DB::update('update settings set value = default_value');
+
+        return redirect(route('settings.list'));
     }
 }

@@ -24,6 +24,7 @@ class CreateTableGroupsTable extends Migration
         // Populate
         DB::table('table_groups')->insert(['id' => 1, 'name' => 'System', 'code' => 'system', 'weight' => 100, 'flag_system' => 1]);
         DB::table('table_groups')->insert(['id' => 2, 'name' => 'Accounts', 'code' => 'accounts', 'weight' => 90, 'flag_system' => 1]);
+        DB::table('table_groups')->insert(['id' => 3, 'name' => 'Data', 'code' => 'data', 'weight' => 110, 'flag_system' => 0]);
     }
 
     /**

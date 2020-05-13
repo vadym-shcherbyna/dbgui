@@ -39,6 +39,7 @@ class CreateFieldsTable extends Migration
         // Table groups fields
         DB::table('fields')->insert(['table_id' => 4, 'field_type_id' => 7, 'name' => 'Weight', 'code' => 'weight', 'weight' => 100, 'flag_required' => 1, 'flag_view' => 1, 'default_value' => 100]);
         DB::table('fields')->insert(['table_id' => 4, 'field_type_id' => 1, 'name' => 'Name', 'code' => 'name', 'weight' => 90, 'flag_required' => 1, 'flag_view' => 1]);
+        DB::table('fields')->insert(['table_id' => 4, 'field_type_id' => 1, 'name' => 'Code', 'code' => 'code', 'weight' => 80, 'flag_required' => 1, 'flag_view' => 1]);
 
         // Table fields
         DB::table('fields')->insert(['table_id' => 1, 'field_type_id' => 7, 'name' => 'Weight', 'code' => 'weight', 'weight' => 130, 'flag_required' => 1, 'flag_view' => 1, 'default_value' => 100]);
@@ -75,6 +76,11 @@ class CreateFieldsTable extends Migration
         DB::table('fields')->insert(['table_id' => 6, 'field_type_id' => 1, 'name' => 'Email', 'code' => 'email', 'weight' => 90, 'flag_required' => 1, 'flag_view' => 1, 'flag_edit' => 0]);
         DB::table('fields')->insert(['table_id' => 6, 'field_type_id' => 9, 'name' => 'Password', 'code' => 'password', 'weight' => 80, 'flag_required' => 1, 'flag_view' => 0, 'flag_edit' => 0]);
         DB::table('fields')->insert(['table_id' => 6, 'field_type_id' => 6, 'name' => 'User group', 'code' => 'user_group_id', 'weight' => 70, 'flag_required' => 1, 'linked_data_id' => 7, 'flag_view' => 1]);
+
+        // Items
+        DB::table('fields')->insert(['table_id' => 8, 'field_type_id' => 1, 'name' => 'Name', 'code' => 'name', 'weight' => 100, 'flag_required' => 1, 'flag_view' => 1]);
+        DB::table('fields')->insert(['table_id' => 8, 'field_type_id' => 1, 'name' => 'Code', 'code' => 'code', 'weight' => 90, 'flag_required' => 1, 'flag_view' => 1]);
+        DB::table('fields')->insert(['table_id' => 8, 'field_type_id' => 1, 'name' => 'Description', 'code' => 'description', 'weight' => 80, 'flag_view' => 1]);
     }
 
     /**

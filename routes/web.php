@@ -13,7 +13,7 @@ Route::group(['middleware' => ['lang']], function ()
     // Auth controllers
     Route::get('auth/login', 'crud\AuthController@loginForm')->name('auth.login');
     Route::post('auth/login', 'crud\AuthController@loginPost');
-    Route::get('auth/logout', 'crud\AuthController@logout')->name('logout');
+    Route::get('auth/logout', 'crud\AuthController@logout')->name('auth.logout');
 
     Route::group(['middleware' => ['crud']], function ()
     {
@@ -23,6 +23,7 @@ Route::group(['middleware' => ['lang']], function ()
         // Overriding controller for  settings
         Route::get('crud/settings/list', 'crud\SettingController@form')->name('settings.list');
         Route::post('crud/settings/list', 'crud\SettingController@save');
+        Route::get('crud/settings/default', 'crud\SettingController@default')->name('settings.default');
 
         // Overriding controllers for  tables' section
         Route::post('crud/tables/add', 'crud\TableController@tableAddPost');

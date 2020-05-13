@@ -3,12 +3,15 @@
 namespace App\Fields;
 
 use App\Fields\fieldClass;
-use App\Table;
+
 use DB;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+
+use App\Table;
+
 use App\Helpers\Settings;
 
 class tablesFieldClass  extends fieldClass
@@ -47,11 +50,7 @@ class tablesFieldClass  extends fieldClass
     {
         // Set select's options if they  don't  exist
         if (!isset($this->options[$field->code]))  {
-            $linkedTable = Table::find($field->linked_data_id);
-
-            if ($linkedTable) {
-                $this->options[$field->code] = DB::table($linkedTable->code)->orderBy('id', 'ASC')->get();
-            }
+            $this->setOptions($field);
         }
 
         // Mutate value
@@ -101,16 +100,15 @@ class tablesFieldClass  extends fieldClass
      */
     public function setFilterOptions ($field, $table)
     {
-        $field->options  =  [];
+        $field->options = [];
 
-        if (isset($this->options[$field->code]))  {
+        // Set select's options if they  don't  exist
+        if (!isset($this->options[$field->code]))  {
+            $this->setOptions($field);
+        }
+
+        if (isset($this->options[$field->code])) {
             $field->options =  $this->options[$field->code];
-        } else {
-            $linkedTable = Table::find($field->linked_data_id);
-
-            if ($linkedTable) {
-                $field->options = DB::table($linkedTable->code)->select('id', 'name')->orderBy('weight', 'DESC')->get();
-            }
         }
 
         if (request()->session()->has('filters.'.$table->code)) {
@@ -141,6 +139,31 @@ class tablesFieldClass  extends fieldClass
             Schema::table($tableModel->code, function (Blueprint $table) use ($code) {
                 $table->unsignedBigInteger($code)->default(0);
             });
+        }
+    }
+
+    /**
+     * Create field/fields in  table
+     *
+     * @param  object $fieldModel
+     * @return void
+     */
+    protected function setOptions ($fieldModel)
+    {
+        //
+        $linkedTable = Table::find($fieldModel->linked_data_id);
+
+        if ($linkedTable) {
+            //
+             $queryBuiled = DB::table($linkedTable->code);
+
+            if (!Settings::get('dev_mode_tables')) {
+                if ($linkedTable->code == 'tables') {
+                    $queryBuiled = $queryBuiled->where('flag_system', 0);
+                }
+            }
+
+            $this->options[$fieldModel->code] = $queryBuiled->orderBy('id', 'ASC')->get();
         }
     }
 }

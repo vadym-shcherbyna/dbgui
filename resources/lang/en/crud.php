@@ -8,6 +8,8 @@ return [
     'add' => 'Add',
     'edit' => 'Edit',
     'cancel' => 'Cancel',
+    'save' => 'Save',
+    'no_data' => 'No Data.',
 
     'languages' => [
         'en' => 'EN',
@@ -59,22 +61,25 @@ return [
     'items' => [
 
         'add' => [
-            'title' => [
-                'Add item'
-            ],
+            'title' => 'Add item',
             'meta' => [
                 'title' => 'Add item',
                 'keywords' => '',
                 'description' => '',
             ],
-            'submit' => 'Save',
-            'chancel' => 'Cancel',
+        ],
+
+        'edit' => [
+            'title' => 'Edit item',
+            'meta' => [
+                'title' => 'Edit item',
+                'keywords' => '',
+                'description' => '',
+            ],
         ],
 
         'list' => [
-            'title' => [
-                'List of items'
-            ],
+            'title' => 'List of items',
             'meta' => [
                 'title' => 'List of items',
                 'keywords' => '',
@@ -82,6 +87,29 @@ return [
             ],
             'items_of' => 'items of',
             'total_items' => 'Total items',
+            'actions' => 'Actions',
+            'delete_message' => 'Delete item?',
+        ],
+
+    ],
+
+    'settings' => [
+
+        'list' => [
+            'title' => 'Settings',
+            'meta' => [
+                'title' => 'Settings',
+                'keywords' => '',
+                'description' => '',
+            ],
+            'dev_mode_tables' => 'Show System Tables',
+            'dev_mode_fields' => 'Show System Fields',
+            'local_image_folder_lenght' => 'Images Folder Name Lenght',
+            'local_image_height_max' => 'Max Width Local Image',
+            'local_image_width_max' => 'Max Height Local Image',
+            'local_image_encode_quality' => 'Encode JPG Quality, max 100',
+            'default' => 'Set The Default Values',
+            'default_message' => 'Set the default values?',
         ],
 
     ],

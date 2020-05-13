@@ -36,6 +36,7 @@ class CreateTablesTable extends Migration
         DB::table('tables')->insert(['id' => 5, 'table_group_id' => 1, 'name' => 'Settings', 'code' => 'settings', 'url' => 'settings', 'weight' => 60, 'fa' => 'cogs', 'item_name' => 'Setting', 'flag_system' => 1]);
         DB::table('tables')->insert(['id' => 6, 'table_group_id' => 2, 'name' => 'Users', 'code' => 'users', 'url' => 'users', 'weight' => 100, 'fa' => 'users', 'item_name' => 'user',  'flag_system' => 1]);
         DB::table('tables')->insert(['id' => 7, 'table_group_id' => 2, 'name' => 'User groups', 'code' => 'user_groups', 'url' => 'user-groups', 'weight' => 90, 'fa' => 'user', 'item_name' => 'group', 'flag_system' => 1, 'flag_view' => 0]);
+        DB::table('tables')->insert(['id' => 8, 'table_group_id' => 3, 'name' => 'Items', 'code' => 'items', 'url' => 'items', 'weight' => 100, 'fa' => 'table', 'item_name' => 'item', 'flag_system' => 0, 'flag_view' => 1]);
 
     }
 

@@ -20,7 +20,7 @@
 			<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				<span class="mr-2"><i class="fas fa-user fa-fw mr-2"></i> {{ Auth::user()->email }}</span></a>
 			<div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-				<a class="dropdown-item" href="{{ route('logout') }}"><i class="fas fa-sign-out-alt fa-fw mr-2"></i> @lang('crud.auth.logout.title')</a>
+				<a class="dropdown-item" href="{{ route('auth.logout') }}"><i class="fas fa-sign-out-alt fa-fw mr-2"></i> @lang('crud.auth.logout.title')</a>
 			</div>
 		</li>
 	@endauth

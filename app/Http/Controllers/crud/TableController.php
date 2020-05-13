@@ -53,10 +53,10 @@ class TableController extends CRUDController
      * @param array  $dbData row data from database
      * @return void
      */
-    protected function itemEditPostMutate ($updateData, $dbData)
+    protected function itemEditPostMutate ($updateData)
     {
-        if ($updateData ['code'] != $dbData->code) {
-            Schema::rename($dbData->code, $updateData ['code']);
+        if ($updateData ['code'] != $this->Data['item']->code) {
+            Schema::rename($this->Data['item']->code, $updateData ['code']);
         }
     }
 
@@ -77,8 +77,8 @@ class TableController extends CRUDController
      * @param array  $rowData deleting row data
      * @return void
      */
-    protected function itemDeleteMutate ($itemModel)
+    protected function itemDeleteMutate ()
     {
-        Schema::dropIfExists($itemModel->code);
+        Schema::dropIfExists($this->Data['item']->code);
     }
 }

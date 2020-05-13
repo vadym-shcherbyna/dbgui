@@ -10,7 +10,6 @@
 
             <option
                     value="{{ $option->id }}"
-                    data-description="{{ $option->description }}"
                     data-code="{{ $option->code }}"
                     @if($option->id ==  old($field->code, $field->default_value)) selected @endif
             >{{ $option->name }}</option>
@@ -18,8 +17,6 @@
         @endforeach
 
     </select>
-
-    <small id="fieldTypesSelectHelp" class="form-text text-muted"></small>
 
 </div>
 
@@ -43,14 +40,9 @@
         $(document).ready(function(){
             var currentHelp = $('#fieldTypesSelect').find(':selected').data('description');
 
-            $('#fieldTypesSelectHelp').html(currentHelp);
-
             // Handler for Field Type
             $("body").on("change", "#fieldTypesSelect", function(){
                 var currentOption = $(this).find(':selected').data('code');
-                var currentHelp = $(this).find(':selected').data('description');
-
-                $('#fieldTypesSelectHelp').html(currentHelp);
 
                 if (currentOption == 'tables') {
                     $('#linkedDataId').val($('#linkedDataTables').val());

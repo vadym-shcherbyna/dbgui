@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Storage;
 use Image;
+use App\Helpers\Settings;
 
 class ImageLocal
 {
@@ -65,16 +66,27 @@ class ImageLocal
         // upload image
         $image = Image::make($file->path());
 
-        // Checking  width
+        // Checking  width&height
         $width = $image->width();
-        if ($width > 1024) {
-            $image->resize(1024, null, function ($constraint) {
+        $height = $image->height();
+        $maxWidth = Settings::get('local_image_width_max');
+        $maxHeight = Settings::get('local_image_height_max');
+        $encodeQuality = Settings::get('local_image_encode_quality');
+
+        if ($width > $maxWidth) {
+            $image->resize($maxWidth, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+        }
+
+        if ($height > $maxHeight) {
+            $image->resize(null, $maxHeight, function ($constraint) {
                 $constraint->aspectRatio();
             });
         }
 
         // Convert  to JPEG
-        $image->encode('jpg', 90);
+        $image->encode('jpg', $encodeQuality);
 
         $image->save($imagePath);
 

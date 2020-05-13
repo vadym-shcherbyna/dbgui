@@ -83,99 +83,103 @@ class CRUDController extends PageController
      */
     public function itemsList ($tableCode)
     {
+        //  Checking table
+        $this->setTable($tableCode, 'fieldsView');
+
         // init row model
         $this->Data['item'] = null;
 
-        // Check table code
-        if (Settings::get('dev_mode_tables')) {
-            $this->Data['table'] = Table::with('fieldsView')->with('filters')->where('url', $tableCode)->first();
-        }  else {
-            $this->Data['table'] = Table::with('fieldsView')->with('filters')->where('url', $tableCode)->where('flag_view', 1)->first();
+        // Add page number  to  session
+        if (request()->has('page')) {
+            request()->session()->put('page.'.$this->Data['table']->code, request()->input('page'));
         }
 
-        if ($this->Data['table']) {
-            // Add page number  to  session
-            if (request()->has('page')) {
-                request()->session()->put('page.'.$this->Data['table']->code, request()->input('page'));
-            }
-
-            // Copy page number  from session to   \Illuminate\Http\Request
-            if (request()->session()->has('page.'.$this->Data['table']->code)) {
-                request()->request->add(['page' => request()->session()->get('page.'.$this->Data['table']->code)]);
-            }
-
-            //  Set num  rows
-            if (request()->session()->has('numrows.'.$this->Data['table']->code)) {
-                $this->currentPagination =  request()->session()->get('numrows.'.$this->Data['table']->code);
-            }
-
-            // Set fields
-            $selectedArray = $this->Data['table']->fieldsView->pluck('code')->toArray();
-
-            // Add 'id' element to array
-            array_unshift($selectedArray, 'id');
-
-            // Creating SQL request
-            // Main SQL selected fields
-            $this->Data['items'] = DB::table($this->Data['table']->code)->select($selectedArray);
-
-            // Apply  filters
-            if (request()->session()->has('filters.'.$this->Data['table']->code)) {
-                $filters  = request()->session()->get('filters.'.$this->Data['table']->code);
-
-                foreach($filters as $filter) {
-                    if ($fieldData = $this->getTableFieldById($filter['field'])) {
-                        $this->Data['items'] = $this->{$this->fieldClass($fieldData)}->setFilterWhere($this->Data['items'], $fieldData,  $filter['value']);
-                    }
-                }
-            }
-
-            // Set Sorting value  to  session
-            if (request()->session()->has('sorting.'.$this->Data['table']->code)) {
-                $sort = request()->session()->get('sorting.'.$this->Data['table']->code);
-                $this->sortingField = $sort['field']->code;
-                $this->sortingDirection = $sort['direction'];
-            }
-
-            // Apply sorting
-            $this->Data['items']  = $this->Data['items']->orderBy($this->sortingField, $this->sortingDirection);
-
-            // Run SQL QUERY
-            $this->Data['items']  = $this->Data['items']->paginate($this->currentPagination);
-
-            // Mutate rows  by  Fields Classes
-            foreach ($this->Data['items'] as $key => $value) {
-                foreach ($this->Data['table']->fieldsView as $field) {
-                    $this->Data['items'][$key]->{$field->code} = $this->{$this->fieldClass($field)}->mutateList($this->Data['items'][$key]->{$field->code}, $field);
-                }
-            }
-
-            // If $this->Data['items'] is empty -  clear current  pagination  and redirect to pagination first page
-            if ($this->Data ['items']->count() == 0 && request()->session()->has('page.'.$this->Data['table']->code)) {
-                $this->forgetPagination();
-                return $this->redirectToList();
-            }
-
-            // Mutate  filters  by  Fields Classes
-            foreach ($this->Data['table']->filters as $key => $filter) {
-                $this->Data['table']->filters[$key] = $this->{$this->fieldClass($filter)}->setFilterOptions($filter, $this->Data['table']);
-            }
-
-            // Set View's variables
-            $this->Data['paginationArray'] = self::PAGINATION_ARRAY;
-            $this->Data['currentPagination'] = $this->currentPagination;
-            $this->Data['sortingField'] = $this->sortingField;
-            $this->Data['sortingDirection'] = $this->sortingDirection;
-
-            if ($this->Data['sortingDirection'] == 'ASC') {
-                $this->Data['direction'] = 'desc';
-            } else {
-                $this->Data['direction'] = 'asc';
-            }
-
-            return $this->view('crud.pages.list', $this->Data);
+        // Copy page number  from session to   \Illuminate\Http\Request
+        if (request()->session()->has('page.'.$this->Data['table']->code)) {
+            request()->request->add(['page' => request()->session()->get('page.'.$this->Data['table']->code)]);
         }
 
+        //  Set num  rows
+        if (request()->session()->has('numrows.'.$this->Data['table']->code)) {
+            $this->currentPagination =  request()->session()->get('numrows.'.$this->Data['table']->code);
+        }
+
+        // Set fields
+        $selectedArray = $this->Data['table']->fieldsView->pluck('code')->toArray();
+
+        // Add 'id' element to array
+        array_unshift($selectedArray, 'id');
+
+        // Creating SQL request
+        // Main SQL selected fields
+        $this->Data['items'] = DB::table($this->Data['table']->code)->select($selectedArray);
+
+        // Apply settings
+        if ($this->Data['table']->code == 'fields' && !Settings::get('dev_mode_tables')) {
+            $tableIdx = Table::where('flag_system', 0)->get()->pluck('id');
+            $this->Data['items'] = $this->Data['items']->whereIn('table_id', $tableIdx);
+        }
+
+        // Apply settings
+        if ($this->Data['table']->code == 'tables' && !Settings::get('dev_mode_tables')) {
+            $this->Data['items'] = $this->Data['items']->where('flag_system', 0);
+        }
+
+        // Apply  filters
+        if (request()->session()->has('filters.'.$this->Data['table']->code)) {
+            $filters  = request()->session()->get('filters.'.$this->Data['table']->code);
+
+            foreach($filters as $filter) {
+                if ($fieldData = $this->getTableFieldById($filter['field'])) {
+                    $this->Data['items'] = $this->{$this->fieldClass($fieldData)}->setFilterWhere($this->Data['items'], $fieldData,  $filter['value']);
+                }
+            }
+        }
+
+        // Set Sorting value  to  session
+        if (request()->session()->has('sorting.'.$this->Data['table']->code)) {
+            $sort = request()->session()->get('sorting.'.$this->Data['table']->code);
+            $this->sortingField = $sort['field']->code;
+            $this->sortingDirection = $sort['direction'];
+        }
+
+        // Apply sorting
+        $this->Data['items']  = $this->Data['items']->orderBy($this->sortingField, $this->sortingDirection);
+
+        // Run SQL QUERY
+        $this->Data['items']  = $this->Data['items']->paginate($this->currentPagination);
+
+        // Mutate rows  by  Fields Classes
+        foreach ($this->Data['items'] as $key => $value) {
+            foreach ($this->Data['table']->fieldsView as $field) {
+                $this->Data['items'][$key]->{$field->code} = $this->{$this->fieldClass($field)}->mutateList($this->Data['items'][$key]->{$field->code}, $field);
+            }
+        }
+
+        // If $this->Data['items'] is empty -  clear current  pagination  and redirect to pagination first page
+        if ($this->Data ['items']->count() == 0 && request()->session()->has('page.'.$this->Data['table']->code)) {
+            $this->forgetPagination();
+            return redirect(route('items.list', $tableCode));
+        }
+
+        // Mutate  filters  by  Fields Classes
+        foreach ($this->Data['table']->filters as $key => $filter) {
+            $this->Data['table']->filters[$key] = $this->{$this->fieldClass($filter)}->setFilterOptions($filter, $this->Data['table']);
+        }
+
+        // Set View's variables
+        $this->Data['paginationArray'] = self::PAGINATION_ARRAY;
+        $this->Data['currentPagination'] = $this->currentPagination;
+        $this->Data['sortingField'] = $this->sortingField;
+        $this->Data['sortingDirection'] = $this->sortingDirection;
+
+        if ($this->Data['sortingDirection'] == 'ASC') {
+            $this->Data['direction'] = 'desc';
+        } else {
+            $this->Data['direction'] = 'asc';
+        }
+
+        return $this->view('crud.pages.list', $this->Data);
     }
 
     /**
@@ -189,23 +193,23 @@ class CRUDController extends PageController
     public function itemsListFilter ($tableCode, $fieldID, $value)
     {
         //  Checking table
-        if ($this->setTable($tableCode)) {
-            // Get  table  field by $fieldID
-            if ($field = $this->getTableFieldById($fieldID)) {
-                if ($value == self::FILTER_CLEAR) {
-                    // Delete filter from session
-                    request()->session()->forget('filters.'.$this->Data['table']->code.'.'.$fieldID);
-                } else {
-                    //  Add filter into session
-                    request()->session()->put('filters.'.$this->Data['table']->code.'.'.$fieldID, ['field' =>  $fieldID, 'value' => $value]);
-                }
+        $this->setTable($tableCode);
+
+        // Get  table  field by $fieldID
+        if ($field = $this->getTableFieldById($fieldID)) {
+            if ($value == self::FILTER_CLEAR) {
+                // Delete filter from session
+                request()->session()->forget('filters.'.$this->Data['table']->code.'.'.$fieldID);
+            } else {
+                //  Add filter into session
+                request()->session()->put('filters.'.$this->Data['table']->code.'.'.$fieldID, ['field' =>  $fieldID, 'value' => $value]);
             }
-
-            // Clear  pagination if  apply  new filter
-            $this->forgetPagination();
-
-            return $this->itemsList($tableCode);
         }
+
+        // Clear  pagination if  apply  new filter
+        $this->forgetPagination();
+
+        return $this->itemsList($tableCode);
     }
 
     /**
@@ -219,17 +223,17 @@ class CRUDController extends PageController
     public function itemsListSorting  ($tableCode, $fieldID, $value)
     {
         //  Checking table
-        if ($this->setTable($tableCode)) {
-            // Get  table  field by $fieldID
-            if ($field = $this->getTableFieldById($fieldID)) {
-                $direction = ($value == 'desc') ? 'DESC' : 'ASC';
+        $this->setTable($tableCode);
 
-                // Save  sorting  in  session
-                request()->session()->put('sorting.'.$this->Data['table']->code, ['field' =>  $field, 'direction' => $direction]);
-            }
+        // Get  table  field by $fieldID
+        if ($field = $this->getTableFieldById($fieldID)) {
+            $direction = ($value == 'desc') ? 'DESC' : 'ASC';
 
-            return $this->itemsList($tableCode);
+            // Save  sorting  in  session
+            request()->session()->put('sorting.'.$this->Data['table']->code, ['field' =>  $field, 'direction' => $direction]);
         }
+
+        return $this->itemsList($tableCode);
     }
 
     /**
@@ -242,12 +246,13 @@ class CRUDController extends PageController
     public function itemsListNumRows ($tableCode, $numRowValue)
     {
         //  Checking table
-        if ($this->setTable($tableCode)) {
-            if(in_array($numRowValue, self::PAGINATION_ARRAY)) {
-                request()->session()->put('numrows.'.$this->Data['table']->code, $numRowValue);
-            }
+        $this->setTable($tableCode);
+
+        if(in_array($numRowValue, self::PAGINATION_ARRAY)) {
+            request()->session()->put('numrows.'.$this->Data['table']->code, $numRowValue);
         }
-        return $this->redirectToList();
+
+        return redirect(route('items.list', $tableCode));
     }
 
     /**
@@ -261,27 +266,26 @@ class CRUDController extends PageController
     public function itemsListFlag ($tableCode, $fieldID, $id)
     {
         //  Checking table
-        if ($this->setTable($tableCode)) {
-            // Get  table  field by $fieldID
-            if ($field = $this->getTableFieldById($fieldID)) {
-                // Get row
-                $row = DB::table($this->Data['table']->code)->where('id', $id)->first();
+        $this->setTable($tableCode);
 
-                if ($row)  {
-                    // Check value of flag
-                    if ($row->{$field->code}) {
-                        //  Set  flag field  to 0
-                        $row = DB::table($this->Data['table']->code)->where('id', $id)->update([$field->code => 0]);
-                    } else {
-                        //  Set  flag field  to 1
-                        $row = DB::table($this->Data['table']->code)->where('id', $id)->update([$field->code => 1]);
-                    }
+        // Get  table  field by $fieldID
+        if ($field = $this->getTableFieldById($fieldID)) {
+            // Get row
+            $row = DB::table($this->Data['table']->code)->where('id', $id)->first();
+
+            if ($row)  {
+                // Check value of flag
+                if ($row->{$field->code}) {
+                    //  Set  flag field  to 0
+                    $row = DB::table($this->Data['table']->code)->where('id', $id)->update([$field->code => 0]);
+                } else {
+                    //  Set  flag field  to 1
+                    $row = DB::table($this->Data['table']->code)->where('id', $id)->update([$field->code => 1]);
                 }
             }
-
-            return $this->itemsList($tableCode);
         }
 
+        return redirect (route('items.list', $tableCode));
     }
 
     /**
@@ -293,14 +297,17 @@ class CRUDController extends PageController
     public function itemAddGet ($tableCode)
     {
         // Check table
-        if ($this->setTable($tableCode)) {
-            // Mutate fields
-            foreach ($this->Data['table']->fields as $key => $field) {
-                $this->Data['table']->fields[$key] = $this->{$this->fieldClass($field)}->mutateAddGet($field);
-            }
+        $this->setTable($tableCode);
 
-            return view('crud.pages.add', $this->Data);
+        // Init variables
+        $this->Data['mode'] = 'add';
+
+        // Mutate fields
+        foreach ($this->Data['table']->fields as $key => $field) {
+            $this->Data['table']->fields[$key] = $this->{$this->fieldClass($field)}->mutateAddGet($field);
         }
+
+        return $this->view('crud.pages.form', $this->Data);
     }
 
     /**
@@ -313,36 +320,36 @@ class CRUDController extends PageController
     public function itemAddPost (Request $request, $tableCode)
     {
         // Check table and row
-        if ($this->setTable($tableCode)) {
-            // Validate
-            $this->createValidateArray($this->Data['table']->fields);
-            $validator = Validator::make($request->all(), $this->validateArray);
+        $this->setTable($tableCode);
 
-            // return form if  error
-            if ($validator->fails()) {
-                return redirect('crud/'.$this->Data['table']->url.'/add')
-                    ->withErrors($validator)
-                    ->withInput();
-            }
+        // Validate
+        $this->createValidateArray($this->Data['table']->fields);
+        $validator = Validator::make($request->all(), $this->validateArray);
 
-            // Inserting array for database
-            $insertArray = [];
-
-            // Mutate POST data	 By Fields Classes
-            foreach ($this->Data['table']->fields as $key => $field) {
-                // Mutate  insertArray adding new  keys with values from request (POST)
-                $insertArray = $this->{$this->fieldClass($field)}->mutateAddPost($request, $field, $insertArray);
-            }
-
-            //  Insert row
-            DB::table($this->Data['table']->code)->insert($insertArray);
-
-            // Call extra func.
-            $this->itemAddPostMutate($insertArray);
-
-            // Redirect  to items list
-            return $this->redirectToList();
+        // return form if  error
+        if ($validator->fails()) {
+            return redirect(route('items.add', $tableCode))
+                ->withErrors($validator)
+                ->withInput();
         }
+
+        // Inserting array for database
+        $insertArray = [];
+
+        // Mutate POST data	 By Fields Classes
+        foreach ($this->Data['table']->fields as $key => $field) {
+            // Mutate  insertArray adding new  keys with values from request (POST)
+            $insertArray = $this->{$this->fieldClass($field)}->mutateAddPost($request, $field, $insertArray);
+        }
+
+        //  Insert row
+        DB::table($this->Data['table']->code)->insert($insertArray);
+
+        // Call extra func.
+        $this->itemAddPostMutate($insertArray);
+
+        // Redirect  to items list
+        return redirect(route('items.list', $tableCode));
     }
 
     /**
@@ -355,17 +362,20 @@ class CRUDController extends PageController
     public function itemEditGet ($tableCode, $id)
     {
         // Check table  by  code
-        if ($this->setTable($tableCode, 'fieldsEdit')) {
-            // Check row  by  ID
-            if ($this->checkRow($id)) {
-                // Mutate fields
-                foreach ($this->Data['table']->fieldsEdit as $key => $field) {
-                    $this->Data['table']->fieldsEdit[$key] = $this->{$this->fieldClass($field)}->mutateEditGet($field, $this->Data['item']);
-                }
+        $this->setTable($tableCode, 'fieldsEdit');
 
-                return $this->view('crud.pages.edit', $this->Data);
-            }
+        // Check row by Id
+        $this->checkItem($id);
+
+        // Init variables
+        $this->Data['mode'] = 'edit';
+
+        // Mutate fields
+        foreach ($this->Data['table']->fieldsEdit as $key => $field) {
+            $this->Data['table']->fieldsEdit[$key] = $this->{$this->fieldClass($field)}->mutateEditGet($field, $this->Data['item']);
         }
+
+        return $this->view('crud.pages.form', $this->Data);
     }
 
     /**
@@ -379,38 +389,35 @@ class CRUDController extends PageController
     public function itemEditPost (Request $request, $tableCode, $id)
     {
         // Check table  by  code
-        if ($this->setTable($tableCode, 'fieldsEdit')) {
-            // Check row  by  ID
-            if ($this->checkRow($id)) {
-                // Validate
-                $this->createValidateArray($this->Data['table']->fieldsEdit);
-                $validator = Validator::make($request->all(), $this->validateArray);
+        $this->setTable($tableCode, 'fieldsEdit');
 
-                // return form
-                if ($validator->fails()) {
-                    return redirect('crud/' . $this->Data['table']->url . '/edit/' . $this->Data['item']->id)
-                        ->withErrors($validator)
-                        ->withInput();
-                }
+        // Check row  by  ID
+        $this->checkItem($id);
 
-                // Mutate POST data
-                $updateArray = [];
-                foreach ($this->Data['table']->fieldsEdit as $key => $field) {
-                    $updateArray = $this->{$this->fieldClass($field)}->mutateEditPost($request, $field, $updateArray);
-                }
+        // Validate
+        $this->createValidateArray($this->Data['table']->fieldsEdit);
+        $validator = Validator::make($request->all(), $this->validateArray);
 
-                // Get  old Row  data
-                $rowModel = DB::table($this->Data['table']->code)->where('id', $id)->first();
-
-                // Update  row
-                DB::table($this->Data['table']->code)->where('id', $id)->update($updateArray);
-
-                // Extra
-                $this->itemEditPostMutate($updateArray, $rowModel);
-
-                return $this->redirectToList();
-            }
+        // return form
+        if ($validator->fails()) {
+            return redirect(route('items.edit', [$tableCode, $id]))
+                ->withErrors($validator)
+                ->withInput();
         }
+
+        // Mutate POST data
+        $updateArray = [];
+        foreach ($this->Data['table']->fieldsEdit as $key => $field) {
+            $updateArray = $this->{$this->fieldClass($field)}->mutateEditPost($request, $field, $updateArray);
+        }
+
+        // Update  row
+        DB::table($this->Data['table']->code)->where('id', $id)->update($updateArray);
+
+        // Extra hadler
+        $this->itemEditPostMutate($updateArray);
+
+        return redirect(route('items.list', $tableCode));
     }
 
     /**
@@ -423,26 +430,23 @@ class CRUDController extends PageController
     public function itemDelete ($tableCode, $id)
     {
         // Check table  by  code
-        if ($this->setTable($tableCode)) {
-            // Check row  by  ID
-            if ($this->checkRow($id)) {
-                // Mutate row
-                foreach ($this->Data['table']->fields as $key => $field) {
-                    $this->{$this->fieldClass($field)}->mutateDelete($this->Data['item'], $field);
-                }
+        $this->setTable($tableCode);
 
-                // Get row
-                $itemModel = DB::table($this->Data['table']->code)->where('id', $id)->first();
+        // Check row  by  ID
+        $this->checkItem($id);
 
-                // Delete row
-                DB::table($this->Data['table']->code)->where('id', $id)->delete();
-
-                // Extra func after delete row
-                $this->itemDeleteMutate($itemModel);
-            }
-
-            return $this->redirectToList();
+        // Mutate row
+        foreach ($this->Data['table']->fields as $key => $field) {
+            $this->{$this->fieldClass($field)}->mutateDelete($this->Data['item'], $field);
         }
+
+        // Delete row
+        DB::table($this->Data['table']->code)->where('id', $id)->delete();
+
+        // Extra func after delete row
+        $this->itemDeleteMutate();
+
+        return redirect (route('items.list', $tableCode));
     }
 
     /**
@@ -470,20 +474,20 @@ class CRUDController extends PageController
      */
     protected function setTable($tableCode, $relations = 'fields')
     {
-        //  Get  table   by code
-        if (Settings::get('dev_mode_tables')) {
-            $tableModel = Table::with($relations)->where('url', $tableCode)->first();
-        } else {
-            $tableModel = Table::with($relations)->where('url', $tableCode)->where('flag_view', 1)->first();
-        }
+        // Table model
+        $tableModel = Table::with($relations)->where('url', $tableCode)->first();
 
+        // Check permissions
         if ($tableModel) {
+            if (!Settings::get('dev_mode_tables')) {
+                if (!$tableModel->flag_view) {
+                    abort(403);
+                }
+            }
             $this->Data['table'] = $tableModel;
-
-            return true;
+        } else {
+            abort(404);
         }
-
-        return false;
     }
 
     /**
@@ -492,17 +496,16 @@ class CRUDController extends PageController
      * @param int  $id row ID
      * @return boolean
      */
-    protected function checkRow($id)
+    protected function checkItem($id)
     {
         // Check row
-        $row = DB::table($this->Data['table']->code)->where('id', $id)->first();
+        $rowModel = DB::table($this->Data['table']->code)->where('id', $id)->first();
 
-        if ($row) {
-            $this->Data['item'] = $row;
-            return true;
+        if ($rowModel) {
+            $this->Data['item'] = $rowModel;
+        } else {
+            abort(404);
         }
-
-        return false;
     }
 
     /**
@@ -529,16 +532,6 @@ class CRUDController extends PageController
     }
 
     /**
-     * Redirect to List of  items
-     *
-     * @return Illuminate\Support\Facades\Redirect
-     */
-    protected function redirectToList ()
-    {
-        return redirect('crud/'.$this->Data['table']->url);
-    }
-
-    /**
      * Forget pagination
      *
      * @return void
@@ -556,7 +549,7 @@ class CRUDController extends PageController
      */
     protected function itemAddPostMutate ($insertArray)
     {
-
+        //
     }
 
     /**
@@ -566,9 +559,9 @@ class CRUDController extends PageController
      * @param array  $updatedData row data after update
      * @return void
      */
-    protected function itemEditPostMutate ($oldData, $updatedData)
+    protected function itemEditPostMutate ($oldData)
     {
-
+        //
     }
 
     /**
@@ -577,8 +570,8 @@ class CRUDController extends PageController
      * @param array  $rowData deleting row data
      * @return void
      */
-    protected function itemDeleteMutate ($rowData)
+    protected function itemDeleteMutate ()
     {
-
+        //
     }
 }

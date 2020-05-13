@@ -57,20 +57,19 @@ class FieldController extends CRUDController
      * Action after update row data
      *
      * @param array  $updateData post data  for updating
-     * @param object  $dbData row model from database
      * @return void
      */
-    protected function itemEditPostMutate ($updateData, $dbData)
+    protected function itemEditPostMutate ($updateData)
     {
         // Checking
-        if ($updateData ['code'] != $dbData->code) {
+        if ($updateData ['code'] != $this->Data['item']->code) {
             // Get field  type
-            $fieldType = FieldType::where('id', $dbData->field_type_id)->first();
+            $fieldType = FieldType::where('id', $this->Data['item']->field_type_id)->first();
 
             // Get table data
-            $tableModel = Table::where('id', $dbData->table_id)->first();
+            $tableModel = Table::where('id', $this->Data['item']->table_id)->first();
 
-            $this->{$this->fieldClassByType($fieldType)}->updateFields($updateData, $dbData,  $tableModel);
+            $this->{$this->fieldClassByType($fieldType)}->updateFields($updateData, $tableModel);
         }
     }
 
@@ -92,15 +91,15 @@ class FieldController extends CRUDController
      * @param array  $rowData deleting row data
      * @return void
      */
-    protected function itemDeleteMutate ($itemModel)
+    protected function itemDeleteMutate ()
     {
         // Get field  type
-        $fieldType = FieldType::where('id', $itemModel->field_type_id)->first();
+        $fieldType = FieldType::where('id', $this->Data['item']->field_type_id)->first();
 
         // Get table data
-        $tableModel = Table::where('id', $itemModel->table_id)->first();
+        $tableModel = Table::where('id', $this->Data['item']->table_id)->first();
 
-        $this->{$this->fieldClassByType($fieldType)}->deleteFields($itemModel,  $tableModel);
+        $this->{$this->fieldClassByType($fieldType)}->deleteFields($tableModel);
     }
 
     /**

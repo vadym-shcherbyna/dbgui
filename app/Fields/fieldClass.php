@@ -150,10 +150,15 @@ class fieldClass
      * @param object $tableModel table model
      * @return void
      */
-    public function updateFields($updateData, $dbData,  $tableModel)  {
-        if(Schema::hasColumn($tableModel->code, $dbData->code)) {
-            Schema::table($tableModel->code, function (Blueprint $table) use ($dbData, $updateData) {
-                $table->renameColumn($dbData->code, $updateData ['code']);
+    public function updateFields($updateData, $tableModel)  {
+        //
+        $itemModel = $this->Data['item'];
+
+        // Check field exists
+        if(Schema::hasColumn($tableModel->code, $itemModel->code)) {
+            // Rename field
+            Schema::table($tableModel->code, function (Blueprint $table) use ($itemModel, $updateData) {
+                $table->renameColumn($itemModel->code, $updateData ['code']);
             });
         };
     }
@@ -165,7 +170,10 @@ class fieldClass
      * @param object $tableModel table model
      * @return void
      */
-    public function deleteFields($itemModel, $tableModel)  {
+    public function deleteFields($tableModel)  {
+        //
+        $itemModel = $this->Data['item'];
+
         if(Schema::hasColumn($tableModel->code, $itemModel->code)) {
             Schema::table($tableModel->code, function (Blueprint $table) use ($itemModel) {
                 $table->dropColumn($itemModel->code);

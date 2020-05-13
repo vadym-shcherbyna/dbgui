@@ -20,10 +20,10 @@ class CheckAdmin
             if (Auth::user()->user_group_id == 1) {
 
             } else {
-                return redirect(route('login'));
+                return redirect(route('auth.login'));
             }
         } else {
-            return redirect(route('login'));
+            return redirect(route('auth.login'));
         }
 
         return $next($request);

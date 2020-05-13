@@ -22,7 +22,7 @@ class AuthController extends PageController
             return redirect(route('dashboard'));
         } else {
             //
-            return $this->view('auth.login');
+            return $this->view('crud.auth.login');
         }
     }
 
