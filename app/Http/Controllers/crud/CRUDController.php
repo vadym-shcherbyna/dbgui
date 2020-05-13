@@ -70,7 +70,7 @@ class CRUDController extends PageController
      *
      * @return Response
      */
-    public function index()
+    public function dashboard()
     {
         return $this->view('crud.pages.index', $this->Data);
     }

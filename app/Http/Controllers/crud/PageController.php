@@ -53,11 +53,6 @@ class PageController extends Controller
             $this->$fieldName = new $fieldClass;
         }
 
-        // Creating clear predefined class
-        $this->Data['table'] = new \stdClass;
-        $this->Data['table']->table_group_id = 0;
-        $this->Data['table']->code = '';
-
         //
         $this->Data ['breadcrumbs'] = [];
     }
@@ -102,11 +97,14 @@ class PageController extends Controller
         // Set meta
         $this->setMetaFromLocale();
 
+        // Set breadcrumbs
+        $this->setBreadcrumbs();
+
         return view($view, $this->Data);
     }
 
     /**
-     * Return view
+     * Set Meta
      *
      * @param string route name
      * @return void
@@ -119,6 +117,34 @@ class PageController extends Controller
                     $this->Data [$code] = Lang::get('crud.'.$this->Data ['routeName'].'.meta.'.$code);
                 }
             }
+        }
+    }
+
+    /**
+     * Set breadcrumbs
+     *
+     * @param string route name
+     * @return void
+     */
+    public function setBreadcrumbs()
+    {
+        if (isset($this->Data['table'])) {
+
+            $name = $this->Data['table']->name;
+
+            if (Lang::has('crud.menu.meta.'.$this->Data['table']->code,  App::getLocale())) {
+                $name = Lang::get('crud.menu.meta.'.$this->Data['table']->code);
+            }
+
+            $this->Data ['breadcrumbs'] [] = [
+                'href' => route('items.list', $this->Data['table']->url),
+                'name' => $name,
+            ];
+
+            //
+            $this->Data ['breadcrumbs'] [] = [
+                'name' => $this->Data ['title'],
+            ];
         }
     }
 

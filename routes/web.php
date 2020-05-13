@@ -18,7 +18,7 @@ Route::group(['middleware' => ['lang']], function ()
     Route::group(['middleware' => ['crud']], function ()
     {
         // Crud index (list)
-        Route::get('crud', 'crud\CRUDController@index')->name('dashboard');
+        Route::get('crud', 'crud\CRUDController@dashboard')->name('dashboard');
 
         // Overriding controller for  settings
         Route::get('crud/settings/list', 'crud\SettingController@form')->name('settings.list');

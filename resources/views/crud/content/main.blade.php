@@ -9,6 +9,7 @@
 		</div>
 
 		<div class="col-md-9">
+			@include('crud.blocks.breadcrumbs')
 			@yield('info')
 		</div>
 
