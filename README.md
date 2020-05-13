@@ -50,4 +50,4 @@ Update `app/Http/Kernel.php`, add new middlewares to `$routeMiddleware` array:
   - Migration + seeding
   - Custom validation rules
   - Custom middleware  
-  - Localization (en, ru) 
+  - Localization
