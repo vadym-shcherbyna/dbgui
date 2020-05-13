@@ -47,6 +47,7 @@ Update `app/Http/Kernel.php`, add new middlewares to `$routeMiddleware` array:
 `'lang' => \App\Http\Middleware\SetLang::class,`		    
 
  # Code features
-  - Migrations + seeding
+  - Migration + seeding
   - Custom validation rules
   - Custom middleware  
+  - Localization (en, ru) 
