@@ -22,7 +22,11 @@ class imagelocalFieldClass  extends fieldClass
      */
     public function mutateList ($value, $field = null)
     {
-        return ImageLocal::getImage ($value, 32, 32);
+        if (empty($value)) {
+            return false;
+        } else {
+            return ImageLocal::getImage ($value, 32, 32);
+        }
     }
 
     /**
@@ -35,16 +39,16 @@ class imagelocalFieldClass  extends fieldClass
      */
     public function mutateAddPost (Request $request, $field, $insertArray)
     {
-        $imageKey = null;
+        $imageId = null;
 
         // Check isset  file
         if ($request->hasFile($field->code)) {
             if ($request->file($field->code)->isValid()) {
-                $imageKey = ImageLocal::uploadImage($request->file($field->code));
+                $imageId = ImageLocal::uploadImage($request->file($field->code));
             }
         }
 
-        $insertArray [$field->code] = $imageKey;
+        $insertArray [$field->code] = $imageId;
         return $insertArray;
     }
 
@@ -125,10 +129,10 @@ class imagelocalFieldClass  extends fieldClass
         $code = $insertData ['code'];
 
         if(Schema::hasColumn($tableModel->code, $code)) {
-        }
-        else {
+
+        } else {
             Schema::table($tableModel->code, function (Blueprint $table) use ($code) {
-                $table->char($code, 32)->nullable();
+                $table->unsignedBigInteger($code)->default(0);
             });
         }
     }

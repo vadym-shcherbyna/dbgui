@@ -3,8 +3,10 @@
 namespace App\Helpers;
 
 use Storage;
-use Image;
+use Intervention;
+
 use App\Helpers\Settings;
+use App\Image;
 
 class ImageLocal
 {
@@ -13,7 +15,7 @@ class ImageLocal
      *
      * @var string
      */
-    const DISC_NAME = 'imagelocal';
+    const DISC_NAME = 'public';
 
     /**
      * Create  random file name fir image
@@ -31,9 +33,13 @@ class ImageLocal
      * @param string $key
      * @return string
      */
-    public static function getFoldersByKey ($key)
+    public static function getFoldersByKey ($key, $nesting_level)
     {
-        return $key [0].'/'.$key [1].'/'.$key [2].'/';
+        $path = '';
+        for($i=0;$i<$nesting_level;$i++){
+            $path = $path . $key [$i].'/';
+        }
+        return $path;
     }
 
     /**
@@ -42,11 +48,13 @@ class ImageLocal
      * @param string $objectName filename of image
      * @return void
      */
-    public static function createPath ($objectName)
+    public static function createPath ($key, $nesting_level)
     {
-        Storage::disk(self::DISC_NAME)->makeDirectory($objectName[0]);
-        Storage::disk(self::DISC_NAME)->makeDirectory($objectName[0].'/'.$objectName[1]);
-        Storage::disk(self::DISC_NAME)->makeDirectory($objectName[0].'/'.$objectName[1].'/'.$objectName[2]);
+        $path = '';
+        for($i=0;$i<$nesting_level;$i++){
+            $path = $path . $key [$i].'/';
+            Storage::disk(self::DISC_NAME)->makeDirectory($path);
+        }
     }
 
     /**
@@ -59,28 +67,30 @@ class ImageLocal
     {
         // create path
         $key = ImageLocal::createName();
-        ImageLocal::createPath ($key);
-        $keyFolders = ImageLocal::getFoldersByKey($key);
+        ImageLocal::createPath ($key, Settings::get('local_images_nesting_level'));
+        $keyFolders = ImageLocal::getFoldersByKey($key, Settings::get('local_images_nesting_level'));
         $imagePath = config('filesystems.disks.'.self::DISC_NAME.'.root').'/'.$keyFolders.$key.'.jpg';
 
         // upload image
-        $image = Image::make($file->path());
+        $image = Intervention::make($file->path());
 
         // Checking  width&height
-        $width = $image->width();
-        $height = $image->height();
+        $imageWidth = $image->width();
+        $imageHeight = $image->height();
         $maxWidth = Settings::get('local_image_width_max');
         $maxHeight = Settings::get('local_image_height_max');
         $encodeQuality = Settings::get('local_image_encode_quality');
 
-        if ($width > $maxWidth) {
-            $image->resize($maxWidth, null, function ($constraint) {
+        if ($imageWidth > $maxWidth) {
+            $imageWidth = $maxWidth;
+            $image->resize($imageWidth, null, function ($constraint) {
                 $constraint->aspectRatio();
             });
         }
 
-        if ($height > $maxHeight) {
-            $image->resize(null, $maxHeight, function ($constraint) {
+        if ($imageHeight > $maxHeight) {
+            $imageHeight = $maxHeight;
+            $image->resize(null, $imageHeight, function ($constraint) {
                 $constraint->aspectRatio();
             });
         }
@@ -88,89 +98,144 @@ class ImageLocal
         // Convert  to JPEG
         $image->encode('jpg', $encodeQuality);
 
+        //
         $image->save($imagePath);
 
-        return $key;
+        //
+        $imageModel = new Image;
+        $imageModel->key = $key;
+        $imageModel->width = $imageWidth;
+        $imageModel->height = $imageHeight;
+        $imageModel->filesize = $image->filesize();
+        $imageModel->nesting_level = Settings::get('local_images_nesting_level');
+        $imageModel->save();
+
+        return $imageModel->id;
     }
 
     /**
      * Get patch  for image by key which saveing in database (md5)
      *
-     * @param string $key 32 long hash string
+     * @param integer $imageId Image ID
      * @param string $width
      * @param string $height
      * @return string
      */
-    public static function getImage ($key, $width = null, $height = null)
+    public static function getImage ($imageId, $width = null, $height = null)
     {
-        // Prepare key
-        $key = trim ($key);
-        if (empty($key)) return false;
+        // Get original image
+        $imageModel = Image::find($imageId);
 
-        // Setting
-        $width  ? $widthName = '.'.$width : $widthName = '';
-        $height ? $heightName = '.'.$height : $heightName = '';
+        if ($imageModel) {
+            // Return original image
+            if ($width == null && $height == null) {
+                return $imageModel;
+            }
 
-        // Patches
-        $keyFolders = ImageLocal::getFoldersByKey($key);
-        $imagePath = $keyFolders.$key.$widthName.$heightName.'.jpg';
-        $imageSourcePath = $keyFolders.$key.'.jpg';
+            // Finding resized image
+            $imageResizedModel = Image::query()->where('parent_id', $imageId);
+            if ($width) {
+                $imageResizedModel = $imageResizedModel->where('width', $width);
+            }
+            if ($height) {
+                $imageResizedModel = $imageResizedModel->where('height', $height);
+            }
+            $imageResizedModel = $imageResizedModel->first();
 
-        // Check exists
-        if (Storage::disk(self::DISC_NAME)->exists($imagePath))  {
-            return env('APP_URL').'/storage/'.self::DISC_NAME.'/'.$imagePath;
-        }
-
-        // Create image
-        if (Storage::disk(self::DISC_NAME)->exists($imageSourcePath))  {
-            $image = Image::make(config('filesystems.disks.'.self::DISC_NAME.'.root').'/'.$imageSourcePath);
-        } else {
-            return false;
-        }
-
-        // Resize image
-        if ($width || $height) {
-            if ($width && $height) {
-                // Crop image
-                $image->fit($width, $height, function ($img) {
-                    $img->upsize();
-                });
+            if ($imageResizedModel) {
+                return $imageResizedModel;
             } else {
-                //  Resize image with ratio
-                $image->resize($width, $height, function ($img) {
-                    $img->aspectRatio();
-                    $img->upsize();
-                });
+                // Create resized image
+
+                // Get original image path
+                $keyFolders = ImageLocal::getFoldersByKey($imageModel->key, $imageModel->nesting_level);
+                $imageOriginalPath = $keyFolders.$imageModel->key.'.jpg';
+
+                // New image path
+                $width  ? $widthName = '-'.$width : $widthName = '';
+                $height ? $heightName = '-'.$height : $heightName = '';
+                $imageResizedKey = $imageModel->key.$widthName.$heightName;
+                $imageResizedPath = $keyFolders.$imageModel->key.$widthName.$heightName.'.jpg';
+
+                //
+                if (Storage::disk(self::DISC_NAME)->exists($imageOriginalPath))  {
+                    $image = Intervention::make(config('filesystems.disks.'.self::DISC_NAME.'.root').'/'.$imageOriginalPath);
+                } else {
+                    return false;
+                }
+
+                // Resize image
+                if ($width || $height) {
+                    if ($width && $height) {
+                        // Crop image
+                        $image->fit($width, $height, function ($img) {
+                            $img->upsize();
+                        });
+                    } else {
+                        //  Resize image with ratio
+                        $image->resize($width, $height, function ($img) {
+                            $img->aspectRatio();
+                            $img->upsize();
+                        });
+                    }
+                }
+
+                // Save image
+                $image->save(config('filesystems.disks.'.self::DISC_NAME.'.root').'/'.$imageResizedPath);
+
+                //
+                $imageModel = new Image;
+                $imageModel->parent_id = $imageId;
+                $imageModel->key = $imageResizedKey;
+                $imageModel->width = $width;
+                $imageModel->height = $width;
+                $imageModel->filesize = $image->filesize();
+                $imageModel->nesting_level = Settings::get('local_images_nesting_level');
+
+                $imageModel->save();
+
+                return $imageModel;
             }
         }
 
-        $image->save(config('filesystems.disks.'.self::DISC_NAME.'.root').'/'.$imagePath);
-
-        return env('APP_URL').'/storage/'.self::DISC_NAME.'/'.$imagePath;
+        return false;
     }
 
     /**
-     * Delete image by key
+     * Delete image by Id
      *
-     * @param string $key 32 long hash string
+     * @param integer $imageId Image ID
      * @return void
      */
-    public static function DeleteImage ($key)
+    public static function deleteImage ($imageId)
     {
-        if (!empty($key)) {
-            $keyFolders = ImageLocal::getFoldersByKey($key);
-            $imagePath =  $keyFolders.$key;
+        $imageOriginalModel = Image::find($imageId);
 
-            $images = Storage::disk(self::DISC_NAME)->allFiles($keyFolders);
+        if ($imageOriginalModel) {
+            ImageLocal::delete($imageOriginalModel);
 
-            foreach ($images as $key => $value) {
-                $pos = strpos($value, $imagePath);
-                if ($pos === false) {
-                }
-                else {
-                    Storage::disk(self::DISC_NAME)->delete($value);
+            $resizedImages = Image::where('parent_id', $imageOriginalModel->id)->get();
+            if (count($resizedImages) > 0) {
+                foreach ($resizedImages as $image) {
+                    ImageLocal::delete($image);
                 }
             }
         }
+    }
+
+    /**
+     * Delete image by Id
+     *
+     * @param object $imageModel Image object
+     * @return void
+     */
+    public static function delete (Image $imageModel)
+    {
+        // Delete image
+        $path = ImageLocal::getFoldersByKey($imageModel->key, $imageModel->nesting_level).$imageModel->key.'.jpg';
+        Storage::disk(self::DISC_NAME)->delete($path);
+
+        // Delete model
+        $imageModel->delete();
     }
 }

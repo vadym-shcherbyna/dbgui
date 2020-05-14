@@ -10,7 +10,7 @@
 
         @isset($field->preview)
 
-            <img src="{{ $field->preview }}" class="img-thumbnail mt-2">
+            <img src="{{ $field->preview->path }}" width="{{$field->preview->width}}" height="{{$field->preview->height}}" class="img-thumbnail mt-2">
 
         @endisset
 

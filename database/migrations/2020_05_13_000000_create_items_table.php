@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 
 use Illuminate\Support\Str;
 
-class CreateitemsTable extends Migration
+class CreateItemsTable extends Migration
 {
     /**
      * Run the migrations.

@@ -26,7 +26,7 @@ class CreateSettingsTable extends Migration
         // Populate
         DB::table('settings')->insert(['name' => 'Show System Tables', 'code' => 'dev_mode_tables', 'value' => 0, 'default_value' => 0, 'type' => 'flag', 'validation' => 'required|in:0,1']);
         DB::table('settings')->insert(['name' => 'Show System Fields', 'code' => 'dev_mode_fields', 'value' => 0, 'default_value' => 0, 'type' => 'flag', 'validation' => 'required|in:0,1']);
-        DB::table('settings')->insert(['name' => 'Images  Folder Name  Lenght', 'code' => 'local_image_folder_lenght', 'value' => 1, 'default_value' => 1, 'type' => 'integer', 'validation' => 'integer|min:1']);
+        DB::table('settings')->insert(['name' => 'Local Images  Nesting Level', 'code' => 'local_images_nesting_level', 'value' => 3, 'default_value' => 3, 'type' => 'integer', 'validation' => 'integer|min:1|max:12']);
         DB::table('settings')->insert(['name' => 'Max Width Local Image', 'code' => 'local_image_width_max', 'value' => 1920, 'default_value' => 1920, 'type' => 'integer', 'validation' => 'integer|min:1']);
         DB::table('settings')->insert(['name' => 'Max Height Local Image', 'code' => 'local_image_height_max', 'value' => 1920, 'default_value' => 1920, 'type' => 'integer', 'validation' => 'integer|min:1']);
         DB::table('settings')->insert(['name' => 'Encode JPG Quality, max 100', 'code' => 'local_image_encode_quality', 'value' => 90, 'default_value' => 90, 'type' => 'integer', 'validation' => 'integer|min:1|max:100']);

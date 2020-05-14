@@ -27,16 +27,7 @@ In the $providers array add the service providers for this package.
 
 Add the facade of this package to the $aliases array.
   
-`'Image' => Intervention\Image\Facades\Image::class`
-
-Add Setting in `config/filesystem.php` 
- 
-        'imagelocal' => [
-            'driver' => 'local',
-            'root' => storage_path('app/public/imagelocal'),
-            'url' => env('APP_URL').'/storage',
-            'visibility' => 'public',
-        ],
+`'Intervention' => Intervention\Image\Facades\Image::class`
  
  **6. Add custom middleware**
    
@@ -45,6 +36,12 @@ Update `app/Http/Kernel.php`, add new middlewares to `$routeMiddleware` array:
 `'crud' => \App\Http\Middleware\CheckAdmin::class,`
 
 `'lang' => \App\Http\Middleware\SetLang::class,`		    
+
+ **7. Login into system**
+ 
+Start page http://{your_domain}/auth/login
+
+Login with any email and password. First login will create admin account with your credentials.
 
  # Code features
   - Migration + seeding
