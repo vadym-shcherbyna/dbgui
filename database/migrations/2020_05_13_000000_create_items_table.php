@@ -22,7 +22,8 @@ class CreateitemsTable extends Migration
         });
 
         // Populate
-        for ($i=1;$i<1001;$i++) {
+        $randomNumRows = random_int(800, 1200);
+        for ($i=1;$i<$randomNumRows;$i++) {
             $name = $this->randomString([1, 2], [5, 12]);
             $code = Str::slug($name, '-');
             $description = $this->randomString([3, 6], [5, 12]);
