@@ -115,10 +115,8 @@ class fieldtypesFieldClass  extends fieldClass
      * @param object $tableModel table model
      * @return void
      */
-    public function deleteFields($tableModel)
+    public function deleteFields($itemModel, $tableModel)
     {
-        $itemModel = $this->Data['item'];
-
         if(Schema::hasColumn($tableModel->code, self::LINKED_DATA_FIELD_NAME)) {
             Schema::table($tableModel->code, function (Blueprint $table) use ($itemModel) {
                 $table->dropColumn($itemModel->code);

@@ -137,7 +137,7 @@ class fieldClass
         }
         else {
             Schema::table($tableModel->code, function (Blueprint $table) use ($code) {
-                $table->string($code, 191)->default('');
+                $table->string($code, 191)->nullable();
             });
         }
     }
@@ -150,10 +150,7 @@ class fieldClass
      * @param object $tableModel table model
      * @return void
      */
-    public function updateFields($updateData, $tableModel)  {
-        //
-        $itemModel = $this->Data['item'];
-
+    public function updateFields ($itemModel, $updateData, $tableModel)  {
         // Check field exists
         if(Schema::hasColumn($tableModel->code, $itemModel->code)) {
             // Rename field
@@ -170,14 +167,20 @@ class fieldClass
      * @param object $tableModel table model
      * @return void
      */
-    public function deleteFields($tableModel)  {
-        //
-        $itemModel = $this->Data['item'];
-
+    public function deleteFields($itemModel, $tableModel)  {
         if(Schema::hasColumn($tableModel->code, $itemModel->code)) {
             Schema::table($tableModel->code, function (Blueprint $table) use ($itemModel) {
                 $table->dropColumn($itemModel->code);
             });
         };
+    }
+
+    /**
+     * Return validate rule
+     *
+     * @return string
+     */
+    public function getValidate($rules, $field, $mode)  {
+        return $rules;
     }
 }

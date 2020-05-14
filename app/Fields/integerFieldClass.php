@@ -23,8 +23,18 @@ class integerFieldClass  extends fieldClass
         }
         else {
             Schema::table($tableModel->code, function (Blueprint $table) use ($code) {
-                $table->integer($code)->default(0);
+                $table->integer($code)->nullable();
             });
         }
+    }
+
+    /**
+     * Return validate rule
+     *
+     * @return string
+     */
+    public function getValidate($rules, $field, $mode)  {
+        $rules [] = 'integer';
+        return $rules;
     }
 }

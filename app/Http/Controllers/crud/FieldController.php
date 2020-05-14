@@ -69,7 +69,7 @@ class FieldController extends CRUDController
             // Get table data
             $tableModel = Table::where('id', $this->Data['item']->table_id)->first();
 
-            $this->{$this->fieldClassByType($fieldType)}->updateFields($updateData, $tableModel);
+            $this->{$this->fieldClassByType($fieldType)}->updateFields($this->Data['item'], $updateData, $tableModel);
         }
     }
 
@@ -99,7 +99,7 @@ class FieldController extends CRUDController
         // Get table data
         $tableModel = Table::where('id', $this->Data['item']->table_id)->first();
 
-        $this->{$this->fieldClassByType($fieldType)}->deleteFields($tableModel);
+        $this->{$this->fieldClassByType($fieldType)}->deleteFields($this->Data['item'], $tableModel);
     }
 
     /**
@@ -108,13 +108,13 @@ class FieldController extends CRUDController
      * @param array  $fields table  fields  array
      * @return array
      */
-    protected function createValidateArray ($fields)
+    protected function createValidateArray ($fields, $mode)
     {
         // Add custom rules for field code
         $this->validateArray ['code'][] = new ColumnExists($this);
         $this->validateArray ['code'][] = new ColumnName();
 
         // Call main func
-        parent::createValidateArray($fields);
+        parent::createValidateArray($fields, $mode);
     }
 }

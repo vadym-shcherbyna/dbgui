@@ -71,7 +71,6 @@ class ImageLocal
         $keyFolders = ImageLocal::getFoldersByKey($key, Settings::get('local_images_nesting_level'));
         $imagePath = config('filesystems.disks.'.self::DISC_NAME.'.root').'/'.$keyFolders.$key.'.jpg';
 
-        // upload image
         $image = Intervention::make($file->path());
 
         // Checking  width&height

@@ -62,7 +62,10 @@ class imagelocalFieldClass  extends fieldClass
     public function mutateEditGet ($field, $itemModel)
     {
         if (!empty($itemModel->{$field->code})) {
-            $field->preview = ImageLocal::getImage ($itemModel->{$field->code}, 128);
+            $preview = ImageLocal::getImage ($itemModel->{$field->code}, 128);
+            if ($preview) {
+                $field->preview = $preview;
+            }
         }
         return $field;
     }
@@ -80,15 +83,15 @@ class imagelocalFieldClass  extends fieldClass
 
         $imageKey = null;
         // Keep old image
-        if ($request->has($field->code)) {
-            $imageKey = $request->input($field->code);
+        if ($request->has($field->code.'_old')) {
+            $imageKey = $request->input($field->code.'_old');
         }
 
         if ($request->hasFile($field->code)) {
             if ($request->file($field->code)->isValid()) {
                 // Delete old image
-                if ($request->has($field->code)) {
-                    ImageLocal::DeleteImage($request->input($field->code));
+                if ($request->has($field->code.'_old')) {
+                    ImageLocal::DeleteImage($request->input($field->code.'_old'));
                 }
 
                 // Upload  new image
@@ -132,8 +135,34 @@ class imagelocalFieldClass  extends fieldClass
 
         } else {
             Schema::table($tableModel->code, function (Blueprint $table) use ($code) {
-                $table->unsignedBigInteger($code)->default(0);
+                $table->unsignedBigInteger($code)->nullable();
             });
         }
+    }
+
+    /**
+     * Return validate rule
+     *
+     * @return string
+     */
+    public function getValidate($rules, $field, $mode)  {
+        //
+        $rules = [];
+
+        $rules [] = 'image';
+
+        if ($mode == 'add') {
+            if ($field->flag_required) {
+                $rules [] = 'required';
+            } else {
+                $rules [] = 'nullable';
+            }
+        }
+
+        if ($mode == 'edit') {
+            $rules [] = 'nullable';
+        }
+
+        return $rules;
     }
 }

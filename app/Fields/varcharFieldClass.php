@@ -38,8 +38,18 @@ class varcharFieldClass  extends fieldClass
         }
         else {
             Schema::table($tableModel->code, function (Blueprint $table) use ($code) {
-                $table->string($code, 191)->default('');
+                $table->string($code, 191)->nullable();
             });
         }
+    }
+
+    /**
+     * Return validate rule
+     *
+     * @return string
+     */
+    public function getValidate($rules, $field, $mode)  {
+        $rules [] = 'string';
+        return $rules;
     }
 }

@@ -137,7 +137,7 @@ class tablesFieldClass  extends fieldClass
         }
         else {
             Schema::table($tableModel->code, function (Blueprint $table) use ($code) {
-                $table->unsignedBigInteger($code)->default(0);
+                $table->unsignedBigInteger($code)->nullable();
             });
         }
     }

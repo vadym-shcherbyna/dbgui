@@ -52,10 +52,10 @@ class CRUDController extends PageController
     /**
      * Array  with validaton rules
      *
-     * @global protected
+     * @global public
      * @var array
      */
-    protected  $validateArray =  [];
+    public $validateArray =  [];
 
     /**
      * Locked array - using fields
@@ -323,7 +323,7 @@ class CRUDController extends PageController
         $this->setTable($tableCode);
 
         // Validate
-        $this->createValidateArray($this->Data['table']->fields);
+        $this->createValidateArray($this->Data['table']->fields, 'add');
         $validator = Validator::make($request->all(), $this->validateArray);
 
         // return form if  error
@@ -395,7 +395,7 @@ class CRUDController extends PageController
         $this->checkItem($id);
 
         // Validate
-        $this->createValidateArray($this->Data['table']->fieldsEdit);
+        $this->createValidateArray($this->Data['table']->fieldsEdit, 'edit');
         $validator = Validator::make($request->all(), $this->validateArray);
 
         // return form
@@ -514,21 +514,29 @@ class CRUDController extends PageController
      * @param array  $fields table  fields  array
      * @return array
      */
-    protected function createValidateArray ($fields)
+    protected function createValidateArray ($fields, $mode)
     {
-        foreach ($fields as $key => $value) {
+        foreach ($fields as $field) {
             // implement require property
-            if ($value->flag_required) {
-                $this->validateArray [$value->code][] = 'required';
+            if ($field->flag_required) {
+                $this->validateArray [$field->code][] = 'required';
+            } else {
+                $this->validateArray [$field->code][] = 'nullable';
             }
 
             // implement unique property
-            if ($value->flag_unique) {
-                $uniqueRule = 'unique:'.$this->Data['table']->code.','.$value->code;
+            if ($field->flag_unique) {
+                //
+                $uniqueRule = 'unique:'.$this->Data['table']->code.','.$field->code;
                 if (isset($this->Data['item']) && $this->Data['item']) $uniqueRule .= ','.$this->Data['item']->id;
-                $this->validateArray [$value->code][] = $uniqueRule;
+
+                $this->validateArray [$field->code][] = $uniqueRule;
             }
+
+            // Get validate from fields classes
+            $this->validateArray [$field->code] = $this->{$this->fieldClass($field)}->getValidate($this->validateArray [$field->code], $field, $mode);
         }
+
     }
 
     /**

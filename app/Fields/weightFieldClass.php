@@ -27,4 +27,14 @@ class weightFieldClass  extends fieldClass
             });
         }
     }
+
+    /**
+     * Return validate rule
+     *
+     * @return string
+     */
+    public function getValidate($rules, $field, $mode)  {
+        $rules [] = 'integer';
+        return $rules;
+    }
 }
