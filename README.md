@@ -1,7 +1,9 @@
 # DBGUI
-GUI for database (Laravel 7.x).
+Data Management System based on Laravel 7.x.
 # Description
-Graphical user interface for database: creating, editing, deleting  tables and columns. Implementing custom types of data.
+Data set management: create sets, edit, delete data. 
+Searching, sorting and filtering data. 
+Different types of fields: string, number, date, flag, image (local storage and AWS S3).
 # Installation
 **1. Install  Laravel 7.***
  
