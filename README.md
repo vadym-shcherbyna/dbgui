@@ -41,7 +41,7 @@ Update `app/Http/Kernel.php`, add new middlewares to `$routeMiddleware` array:
  
 Start page http://{your_domain}/auth/login
 
-Login with any email and password. First login will create admin account with your credentials.
+Login with any email and password. First log in will create admin account with your credentials.
 
  # Code features
   - Migration + seeding

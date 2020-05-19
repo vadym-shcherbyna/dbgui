@@ -31,7 +31,7 @@
 
     @if($table->flag_system == 0)
         <li class="nav-item ml-auto">
-            <a class="nav-link" href="{{route('items.filter', ['fields', 15, $table->id])}}"><i class="fas fa-edit fa-fw mr-2"></i> @lang('crud.menu.fields')</a>
+            <a class="nav-link text-secondary" href="{{route('items.filter', ['fields', 15, $table->id])}}"><i class="fas fa-edit fa-fw mr-2"></i> @lang('crud.menu.fields')</a>
         </li>
     @endif
 

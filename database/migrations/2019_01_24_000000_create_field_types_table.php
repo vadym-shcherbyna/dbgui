@@ -33,8 +33,8 @@ class CreateFieldTypesTable extends Migration
         DB::table('field_types')->insert(['id' => 7, 'name' => 'Weight (sorting)', 'code' => 'weight', 'description' => 'Weight (sorting)', 'flag_sorted' => 1, 'weight' => 240]);
         DB::table('field_types')->insert(['id' => 8, 'name' => 'Field Types (system)', 'code' => 'fieldtypes', 'description' => '', 'flag_system' => 1, 'weight' => 0]);
         DB::table('field_types')->insert(['id' => 9, 'name' => 'Password (system)', 'code' => 'password', 'description' => '', 'flag_system' => 1, 'weight' => 0]);
-        DB::table('field_types')->insert(['id' => 10, 'name' => 'Image (local  storage)', 'code' => 'imagelocal', 'description' => 'Image in local storage', 'weight' => 230]);
-        #DB::table('field_types')->insert(['id' => 11, 'name' => 'Image (CDN  storage)', 'code' => 'password', 'description' => '', 'flag_system' => 1, 'weight' => 0]);
+        DB::table('field_types')->insert(['id' => 10, 'name' => 'Image (public disk)', 'code' => 'imagelocal', 'description' => 'Image in local storage', 'weight' => 230]);
+        DB::table('field_types')->insert(['id' => 11, 'name' => 'Image (S3 disk)', 'code' => 'images3', 'description' => '', 'flag_system' => 0, 'weight' => 220]);
         #DB::table('field_types')->insert(['id' => 12, 'name' => 'Data Source (enumerate)', 'code' => 'enumerate', 'flag_sorted' => 0, 'weight' => 230]);
         #DB::table('field_types')->insert(['id' => 13, 'name' => 'Data Source (collections)', 'code' => 'extented_enumerate', 'flag_sorted' => 0, 'weight' => 220]);
     }
