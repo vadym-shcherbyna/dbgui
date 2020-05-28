@@ -1,7 +1,7 @@
 # DBGUI
 Data Management System based on Laravel 7.x.
 # Description
-Data set management: create sets, edit, delete data. 
+Data set management: create sets, edit and delete data. 
 Searching, sorting and filtering data. 
 Different types of fields: string, number, date, flag, image (local storage and AWS S3).
 # Installation
