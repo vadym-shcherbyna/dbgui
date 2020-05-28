@@ -50,7 +50,7 @@ class Image extends Model
             $imageModel->width = $image->width();
         }
         if ($height) {
-            $imageModel->width = $height;
+            $imageModel->height = $height;
         } else {
             $imageModel->height = $image->height();
         }
