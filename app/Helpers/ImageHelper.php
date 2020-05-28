@@ -57,7 +57,7 @@ class ImageHelper
      * @param string $disk
      * @return string
      */
-    public static function uploadImage ($file, $disk)
+    public static function uploadImage ($file, $disk, $external = false)
     {
         // create path
         $key = ImageHelper::createName();
@@ -71,7 +71,11 @@ class ImageHelper
         $imagePath = $keyFolders.$key.'.jpg';
 
         // Create image
-        $image = Intervention::make($file->path());
+        if ($external) {
+            $image = Intervention::make($file);
+        } else {
+            $image = Intervention::make($file->path());
+        }
 
         // Checking  width&height
         $imageWidth = $image->width();
@@ -114,7 +118,7 @@ class ImageHelper
      * @param string $height
      * @return string
      */
-    public static function getImage ($imageId, $disk, $width = null, $height = null)
+    public static function getImage ($imageId, $width = null, $height = null)
     {
         // Get original image
         $imageModel = Image::find($imageId);
@@ -151,8 +155,8 @@ class ImageHelper
                 $imageResizedPath = $keyFolders.$imageModel->key.$widthName.$heightName.'.jpg';
 
                 // Create resized image from original image
-                if (Storage::disk($disk)->exists($imageOriginalPath))  {
-                    $image = Intervention::make(Storage::disk($disk)->get($imageOriginalPath));
+                if (Storage::disk($imageModel->disk)->exists($imageOriginalPath))  {
+                    $image = Intervention::make(Storage::disk($imageModel->disk)->get($imageOriginalPath));
                 } else {
                     return false;
                 }
@@ -174,10 +178,10 @@ class ImageHelper
                 }
 
                 // Save image
-                Storage::disk($disk)->put($imageResizedPath, $image->stream());
+                Storage::disk($imageModel->disk)->put($imageResizedPath, $image->stream());
 
                 // Add image
-                $imageModel = Image::add($imageResizedKey, $image, $imageModel->id, $disk);
+                $imageModel = Image::add($imageResizedKey, $image, $imageModel->id, $imageModel->disk, $width, $height);
                 return $imageModel;
             }
         }

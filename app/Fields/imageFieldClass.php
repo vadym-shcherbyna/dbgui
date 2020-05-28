@@ -26,7 +26,7 @@ class imageFieldClass  extends fieldClass
         if (empty($value)) {
             return false;
         } else {
-            return ImageHelper::getImage ($value, $this->disk, 32, 32);
+            return ImageHelper::getImage ($value, 32, 32);
         }
     }
 
@@ -63,7 +63,7 @@ class imageFieldClass  extends fieldClass
     public function mutateEditGet ($field, $itemModel)
     {
         if (!empty($itemModel->{$field->code})) {
-            $preview = ImageHelper::getImage ($itemModel->{$field->code}, $this->disk, 128);
+            $preview = ImageHelper::getImage ($itemModel->{$field->code}, 128);
             if ($preview) {
                 $field->preview = $preview;
             }
